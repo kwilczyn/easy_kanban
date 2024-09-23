@@ -19,34 +19,50 @@
   --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
   --vt-c-text-dark-1: var(--vt-c-white);
   --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  /* custom palette */
+  --vt-c-blue: #7db0df;
+  --vt-c-blue-soft: #97bfe5;
+  --vt-c-blue-mute: #648cb2;
+  --vt-c-rose: #df7db0;
+  --vt-c-rose-soft: #e597bf;
+  --vt-c-rose-mute: #b2648c;
+  --vt-c-green: #b0df7d;
+  --vt-c-green-soft: #bfe597;
+  --vt-c-green-mute: #8cb264;
+
+  /* dark mode */
+
+  --vt-c-black: #121212;
+  --vt-c-brown: #2a2929;
+  --vt-c-brown-light: #545151;
+  --vt-c-cream: #f0f0f0;
+  --vt-c-violet: #5647ae;
 }
 
 /* semantic color variables for this project */
 :root {
   --color-background: var(--vt-c-white);
-  --color-background-soft: var(--vt-c-white-soft);
-  --color-background-mute: var(--vt-c-white-mute);
-
-  --color-border: var(--vt-c-divider-light-2);
-  --color-border-hover: var(--vt-c-divider-light-1);
-
-  --color-heading: var(--vt-c-text-light-1);
-  --color-text: var(--vt-c-text-light-1);
-
-  --section-gap: 160px;
+  --color-background-board: var(--vt-c-blue-soft);
+  --color-nav-buttons: transparent;
+  --color-background-list: var(--vt-c-white-soft);
+  --color-background-nav: var(--vt-c-white);
+  --color-background-card: var(--vt-c-white);
+  --color-heading: var(--vt-c-black);
+  --color-text: var(--vt-c-black);
+  --color-delete: var(--vt-c-rose);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background: var(--vt-c-black);
-    --color-background-soft: var(--vt-c-black-soft);
-    --color-background-mute: var(--vt-c-black-mute);
-
-    --color-border: var(--vt-c-divider-dark-2);
-    --color-border-hover: var(--vt-c-divider-dark-1);
-
-    --color-heading: var(--vt-c-text-dark-1);
-    --color-text: var(--vt-c-text-dark-2);
+    --color-background-board: #251212;
+    --color-background-list: #71655c;
+    --color-background-nav: #1b2d42;
+    --color-background-card: #384754;
+    --color-heading: var(--vt-c-cream);
+    --color-text: var(--vt-c-cream);
+    --color-delete: #922323;
   }
 }
 
