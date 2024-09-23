@@ -53,6 +53,7 @@
   --color-delete: var(--vt-c-rose);
 }
 
+/* dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background: var(--vt-c-black);
