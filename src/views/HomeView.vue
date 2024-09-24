@@ -1,6 +1,6 @@
 <template>
   <main>
-    <kanban-board></kanban-board>
+    <kanban-board :lists="lists"></kanban-board>
   </main>
 </template>
 
@@ -15,6 +15,11 @@ export default {
   data() {
     return {
       boardTitle: 'My Simple Kanban Board!'
+    }
+  },
+  computed: {
+    lists() {
+      return this.$store.getters.getActiveBoard.lists
     }
   }
 }
