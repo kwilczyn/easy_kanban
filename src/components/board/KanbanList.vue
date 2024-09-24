@@ -2,7 +2,7 @@
   <section class="kanban-list">
     <header>
       <h2>{{ title }}</h2>
-      <base-button customType="delete">X</base-button>
+      <base-button customType="delete" @click="removeList">X</base-button>
     </header>
     <ul id="tasks-list">
       <li v-for="task in tasks" :key="task.id">
@@ -17,6 +17,7 @@ import KanbanTask from '@/components/board/KanbanTask.vue'
 
 export default {
   components: { KanbanTask },
+  emits: ['removeList'],
   name: 'KanbanList',
   props: {
     title: {
@@ -26,6 +27,11 @@ export default {
     tasks: {
       type: Array,
       required: true
+    }
+  },
+  methods: {
+    removeList() {
+      this.$emit('removeList', { title: this.title })
     }
   }
 }
