@@ -38,10 +38,8 @@
   --vt-c-brown-light: #545151;
   --vt-c-cream: #f0f0f0;
   --vt-c-violet: #5647ae;
-}
 
-/* semantic color variables for this project */
-:root {
+  /* semantic color variables for this project */
   --color-background: var(--vt-c-white);
   --color-background-board: var(--vt-c-blue-soft);
   --color-nav-buttons: transparent;
