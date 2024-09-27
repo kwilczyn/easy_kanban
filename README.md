@@ -1,6 +1,18 @@
-# .
+# Overwiew
 
-This template should help get you started developing with Vue 3 in Vite.
+This project is a simple web application written in Vue.js (3) for creating your own digital Kanban Boards.  
+A Kanban board is a visual project management tool that helps teams organize and track their work. It typically consists of columns representing different stages of a workflow, with tasks or work items represented as cards that move across these columns as they progress.
+The backend part will be located in a separate repository.
+
+<p align="middle">
+<video src="https://github.com/kwilczyn/easy_kanban/blob/main/animation.mov" height="300"></video> <img src="./mobile-view.png" height="300" alt="Movile view" controls loop autoplay />
+</p>
+
+Currently the project is in a very early phase. It is possible now to:
+
+- see the first design look for the desktop and mobile devices
+- see the animations for the basic actions like deleting lists from the board
+- perform a few basic CRUD operations on the predefined test data
 
 ## Recommended IDE Setup
 
