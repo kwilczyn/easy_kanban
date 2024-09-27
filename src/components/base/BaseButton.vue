@@ -18,6 +18,7 @@ button {
   appearance: none;
   color: inherit;
   border: none;
+  white-space: nowrap;
 }
 
 .delete {
@@ -34,5 +35,7 @@ button {
 .navigation {
   background-color: var(--color-nav-buttons);
   border: 1px solid var(--color-text);
+  min-width: 5.2rem;
+  font-size: inherit;
 }
 </style>

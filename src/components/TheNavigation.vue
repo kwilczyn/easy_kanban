@@ -24,20 +24,24 @@ export default {
 }
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+$mobile-device-size: 78rem;
+
 nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 1rem;
+  gap: 1rem;
   background-color: var(--color-background-nav);
-  height: 3rem;
 }
 
 .nav-form {
   display: flex;
   align-items: center;
   gap: 1rem;
+  white-space: nowrap;
+  flex-wrap: wrap;
 }
 
 #selectBoard {
@@ -48,5 +52,16 @@ nav {
   color: var(--text-color);
   background-color: var(--background-color);
   cursor: pointer;
+}
+
+@media (max-width: $mobile-device-size) {
+  nav {
+    font-size: large;
+    align-items: flex-start;
+  }
+
+  .logo {
+    display: none;
+  }
 }
 </style>

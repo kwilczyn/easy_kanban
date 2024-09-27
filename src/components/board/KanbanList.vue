@@ -48,6 +48,7 @@ export default {
   box-shadow: 1px 1px 3px var(--color-border);
   flex: 1;
   height: fit-content;
+  min-width: 20rem;
 }
 
 header {

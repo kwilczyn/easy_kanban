@@ -1,6 +1,6 @@
 <template>
   <div id="board">
-    <transition-group mode="out-in" name="user-list">
+    <transition-group mode="out-in" name="user-list" @before-leave="onBeforeLeave" @leave="onLeave">
       <kanban-list
         v-for="list in lists"
         :key="list.title"
@@ -28,61 +28,50 @@ export default {
     }
   },
   data() {
-    return {}
+    return {
+      animationSpeed: 500
+    }
   },
   methods: {
-    ...mapActions(['removeList'])
+    ...mapActions(['removeList']),
+    onBeforeLeave(el) {
+      console.log('onBeforeLeave')
+      el.style.opacity = 1
+      el.style.transition = `all ${this.animationSpeed}ms ease-in`
+    },
+    onLeave(el, done) {
+      // this method is required to keep the original width of the element in removing animation
+      console.log('onLeave')
+      const width = el.offsetWidth
+      el.style.opacity = 0
+      el.style.width = `${width}px`
+      el.style.position = 'absolute'
+      setTimeout(() => {
+        done()
+      }, this.animationSpeed)
+    }
   }
 }
 </script>
 
-<style scoped>
-/* Your component's styles go here */
+<style lang="scss" scoped>
+$moving-element-speed: 500ms;
+
 #board {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 1rem;
   background-color: var(--color-background-board);
   padding: 1rem;
   align-items: stretch;
+  align-content: flex-start;
   justify-content: flex-start;
   flex: 1;
   box-shadow: 1px 1px 10px var(--color-border);
 }
 
-.user-list-enter-from {
-  opacity: 0;
-  flex-grow: 0;
-  width: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.user-list-enter-active {
-  transition: all 0.3s ease-out;
-}
-
-.user-list-enter-to {
-  opacity: 1;
-  flex-grow: 1;
-}
-
-.user-list-leave-from {
-  opacity: 1;
-  flex-grow: 1;
-}
-
-.user-list-leave-active {
-  transition:
-    all 0.3s ease-in,
-    opacity 0.2s ease-in;
-}
-
-.user-list-leave-to {
-  opacity: 0;
-  flex-grow: 0;
-  width: 0;
-  margin: 0;
-  padding: 0;
+.user-list-move {
+  transition: all $moving-element-speed ease-out;
 }
 </style>
