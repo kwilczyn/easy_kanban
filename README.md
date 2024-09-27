@@ -4,15 +4,18 @@ This project is a simple web application written in Vue.js (3) for creating your
 A Kanban board is a visual project management tool that helps teams organize and track their work. It typically consists of columns representing different stages of a workflow, with tasks or work items represented as cards that move across these columns as they progress.
 The backend part will be located in a separate repository.
 
+<video src="https://github.com/user-attachments/assets/b0168156-8602-4b9f-b32f-436e18d9ba54.mov" height="300" autoplay loop></video>
+
+Currently the project is in a very early phase. Implemented features:
+
+- the first design look for the desktop and mobile devices
+- the animations for the basic actions like deleting lists from the board
+- dark mode
+- basic CRUD operations on the predefined test data
+
 <p align="middle">
-<video src="https://github.com/kwilczyn/easy_kanban/blob/main/animation.mov" height="300"></video> <img src="./mobile-view.png" height="300" alt="Movile view" controls loop autoplay />
+<img src="./mobile-view.png" width="50%" alt="Movile view"/>  
 </p>
-
-Currently the project is in a very early phase. It is possible now to:
-
-- see the first design look for the desktop and mobile devices
-- see the animations for the basic actions like deleting lists from the board
-- perform a few basic CRUD operations on the predefined test data
 
 ## Recommended IDE Setup
 
