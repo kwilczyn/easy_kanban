@@ -49,19 +49,22 @@
   --color-heading: var(--vt-c-black);
   --color-text: var(--vt-c-black);
   --color-delete: var(--vt-c-rose);
+  --color-add: var(--vt-c-green);
 }
 
 /* dark mode */
 @media (prefers-color-scheme: dark) {
   :root {
     --color-background: var(--vt-c-black);
-    --color-background-board: #251212;
-    --color-background-list: #71655c;
-    --color-background-nav: #1b2d42;
-    --color-background-card: #384754;
+    --color-background-board: #282439;
+    --color-background-list: #5e5888;
+    --color-background-nav: #5e5888;
+    --color-background-card: #a29cde;
+
     --color-heading: var(--vt-c-cream);
     --color-text: var(--vt-c-cream);
     --color-delete: #922323;
+    --color-add: var(--vt-c-green-mute);
   }
 }
 
