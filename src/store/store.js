@@ -33,6 +33,9 @@ const store = createStore({
     },
     getActiveBoard(state) {
       return state.activeBoard
+    },
+    getListTitles(state) {
+      return state.activeBoard.lists.map((list) => list.title)
     }
   },
   mutations: {
