@@ -4,6 +4,7 @@
       label="Title"
       :fieldValidator="titleInvalid"
       type="text"
+      name="title"
       v-model.lazy.trim="title"
     />
     <base-button customType="add" type="submit">Add List</base-button>

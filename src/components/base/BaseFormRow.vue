@@ -33,6 +33,7 @@ export default {
     },
     type: String,
     label: String,
+    name: String,
     modelValue: String
   }
 }
