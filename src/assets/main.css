@@ -5,3 +5,12 @@
   margin: 0 auto;
   font-weight: normal;
 }
+
+.error_text {
+  color: var(--color-error) !important;
+  text-shadow: 1px 1px 1px var(--color-background);
+}
+
+.error_border {
+  border-color: var(--color-error) !important;
+}

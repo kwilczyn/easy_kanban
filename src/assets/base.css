@@ -50,6 +50,7 @@
   --color-text: var(--vt-c-black);
   --color-delete: var(--vt-c-rose);
   --color-add: var(--vt-c-green);
+  --color-error: red;
 }
 
 /* dark mode */
@@ -63,7 +64,7 @@
 
     --color-heading: var(--vt-c-cream);
     --color-text: var(--vt-c-cream);
-    --color-delete: #922323;
+    --color-delete: var(--vt-c-rose-mute);
     --color-add: var(--vt-c-green-mute);
   }
 }
@@ -74,6 +75,11 @@
   box-sizing: border-box;
   margin: 0;
   font-weight: normal;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--vt-c-blue);
+  outline-offset: 2px;
 }
 
 body {
