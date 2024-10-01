@@ -33,20 +33,17 @@ export default {
     validateTitle() {
       if (this.title.length === 0) {
         this.titleInvalid = 'Title is required'
-        return false
       } else if (this.title.length < 3) {
         this.titleInvalid = 'Title must be at least 3 characters'
-        return false
       } else if (this.title.length > 20) {
         this.titleInvalid = 'Title must be at most 20 characters'
-        return false
       } else if (this.$store.getters['getListTitles'].includes(this.title)) {
         this.titleInvalid = 'Title is already in use'
-        return false
       } else {
         this.titleInvalid = ''
         return true
       }
+      return false
     }
   }
 }
