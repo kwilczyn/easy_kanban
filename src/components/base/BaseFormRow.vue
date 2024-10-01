@@ -3,7 +3,7 @@
     <div class="row-controls">
       <form-label :for="name" :text="label" :fieldValidator="fieldValidator" />
       <input
-        :modelValue="title"
+        :value="modelValue"
         :class="{ error_border: fieldValidator }"
         :type="type"
         :name="name"
