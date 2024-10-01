@@ -44,7 +44,7 @@ export default {
         this.titleInvalid = 'Title is already in use'
         return false
       } else {
-        this.titleInvalid = false
+        this.titleInvalid = ''
         return true
       }
     }
