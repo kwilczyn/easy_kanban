@@ -7,6 +7,7 @@
         :class="{ error_border: fieldValidator }"
         :type="type"
         :name="name"
+        :id="name"
         @input="$emit('update:modelValue', $event.target.value)"
       />
     </div>
