@@ -19,6 +19,14 @@ button {
   color: inherit;
   border: none;
   white-space: nowrap;
+  background-color: transparent;
+  transition: all 0.2s;
+}
+
+button:hover,
+button:focus {
+  filter: brightness(1.1);
+  transform: scale(1.04);
 }
 
 .delete {
@@ -44,6 +52,7 @@ button {
   background-color: transparent;
   border: none;
   color: var(--color-text);
+  font-weight: bold;
 }
 
 .navigation {

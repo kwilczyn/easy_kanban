@@ -2,7 +2,11 @@
   <div class="kanban-task">
     <header class="kanban-task__header">
       <h3>{{ task.title }}</h3>
-      <base-button customType="burger"></base-button>
+      <base-button customType="burger" @click.stop="toggleDropdown"></base-button>
+      <base-dropdown v-if="isDropdownVisible" v-click-outside="toggleDropdown">
+        <base-button customType="delete" @click="removeTask">Delete Task</base-button>
+        <base-button>Edit Task</base-button>
+      </base-dropdown>
     </header>
     <div class="task-description">{{ task.description }}</div>
   </div>
@@ -11,10 +15,24 @@
 <script>
 export default {
   name: 'KanbanTask',
+  emits: ['removeTask'],
   props: {
     task: {
       type: Object,
       required: true
+    }
+  },
+  data() {
+    return {
+      isDropdownVisible: false
+    }
+  },
+  methods: {
+    toggleDropdown() {
+      this.isDropdownVisible = !this.isDropdownVisible
+    },
+    removeTask() {
+      this.$emit('removeTask', { taskId: this.task.id })
     }
   }
 }
@@ -30,6 +48,7 @@ export default {
 }
 
 .kanban-task__header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;

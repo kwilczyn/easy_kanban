@@ -6,7 +6,7 @@
     </header>
     <ul id="tasks-list">
       <li v-for="task in tasks" :key="task.id">
-        <kanban-task :task="task" />
+        <kanban-task :task="task" @removeTask="onRemoveTask" />
       </li>
     </ul>
   </section>
@@ -14,6 +14,7 @@
 
 <script>
 import KanbanTask from '@/components/board/KanbanTask.vue'
+import { mapActions } from 'vuex'
 
 export default {
   components: { KanbanTask },
@@ -30,6 +31,10 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['removeTask']),
+    onRemoveTask(task) {
+      this.removeTask({ listTitle: this.title, ...task })
+    },
     removeList() {
       this.$emit('removeList', { title: this.title })
     }

@@ -50,6 +50,10 @@ const store = createStore({
       state.activeBoard.lists = state.activeBoard.lists.filter(
         (list) => list.title !== payload.title
       )
+    },
+    removeTask(state, payload) {
+      const list = state.activeBoard.lists.find((list) => list.title === payload.listTitle)
+      list.tasks = list.tasks.filter((task) => task.id !== payload.taskId)
     }
   },
   actions: {
@@ -58,6 +62,9 @@ const store = createStore({
     },
     removeList(context, payload) {
       context.commit('removeList', payload)
+    },
+    removeTask(context, payload) {
+      context.commit('removeTask', payload)
     }
   }
 })
