@@ -1,5 +1,22 @@
 import { createStore } from 'vuex'
 
+export const mutations = {
+  addList(state, payload) {
+    const list = {
+      title: payload.title,
+      tasks: []
+    }
+    state.activeBoard.lists.push(list)
+  },
+  removeList(state, payload) {
+    state.activeBoard.lists = state.activeBoard.lists.filter((list) => list.title !== payload.title)
+  },
+  removeTask(state, payload) {
+    const list = state.activeBoard.lists.find((list) => list.title === payload.listTitle)
+    list.tasks = list.tasks.filter((task) => task.id !== payload.taskId)
+  }
+}
+
 const store = createStore({
   state() {
     return {
@@ -38,24 +55,7 @@ const store = createStore({
       return state.activeBoard.lists.map((list) => list.title)
     }
   },
-  mutations: {
-    addList(state, payload) {
-      const list = {
-        title: payload.title,
-        tasks: []
-      }
-      state.activeBoard.lists.push(list)
-    },
-    removeList(state, payload) {
-      state.activeBoard.lists = state.activeBoard.lists.filter(
-        (list) => list.title !== payload.title
-      )
-    },
-    removeTask(state, payload) {
-      const list = state.activeBoard.lists.find((list) => list.title === payload.listTitle)
-      list.tasks = list.tasks.filter((task) => task.id !== payload.taskId)
-    }
-  },
+  mutations,
   actions: {
     addList(context, payload) {
       context.commit('addList', payload)
