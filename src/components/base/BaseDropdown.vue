@@ -1,15 +1,12 @@
 <template>
-  <nav role="navigation" class="dropdown" ref="dropdown">
+  <nav role="navigation" class="dropdown">
     <slot>...</slot>
   </nav>
 </template>
 
 <script>
 export default {
-  name: 'BaseDropdown',
-  mounted() {
-    this.$refs.dropdown.focus()
-  }
+  name: 'BaseDropdown'
 }
 </script>
 
