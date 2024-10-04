@@ -25,6 +25,22 @@ export const mutations = {
   }
 }
 
+export const getters = {
+  getBoarNames(state) {
+    return state.boardNames
+  },
+  getActiveBoard(state) {
+    return state.activeBoard
+  },
+  getListTitles(state) {
+    return state.activeBoard.lists.map((list) => list.title)
+  },
+  getTaskTitles: (state) => (listTitle) => {
+    const list = state.activeBoard.lists.find((list) => list.title === listTitle)
+    return list.tasks.map((task) => task.title)
+  }
+}
+
 const store = createStore({
   state() {
     return {
@@ -52,17 +68,7 @@ const store = createStore({
       }
     }
   },
-  getters: {
-    getBoarNames(state) {
-      return state.boardNames
-    },
-    getActiveBoard(state) {
-      return state.activeBoard
-    },
-    getListTitles(state) {
-      return state.activeBoard.lists.map((list) => list.title)
-    }
-  },
+  getters,
   mutations,
   actions: {
     addList(context, payload) {
