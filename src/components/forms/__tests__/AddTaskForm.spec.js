@@ -6,13 +6,6 @@ import AddTaskForm from '@/components/forms/AddTaskForm.vue'
 import BaseFormRow from '@/components/base/BaseFormRow.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseFormLabel from '@/components/base/BaseFormLabel.vue'
-import { createStore } from 'vuex'
-
-const mockStore = createStore({
-  getters: {
-    getTaskTitles: () => ['Task 1', 'Task 2']
-  }
-})
 
 describe('AddTaskForm', () => {
   let wrapper
@@ -20,9 +13,9 @@ describe('AddTaskForm', () => {
   beforeEach(() => {
     wrapper = mount(AddTaskForm, {
       global: {
-        components: { BaseFormRow, BaseButton, BaseFormLabel },
-        plugins: [mockStore]
-      }
+        components: { BaseFormRow, BaseButton, BaseFormLabel }
+      },
+      props: { existingTaskTitles: ['Task 1', 'Task 2'] }
     })
   })
 
