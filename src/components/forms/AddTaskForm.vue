@@ -11,7 +11,7 @@
       label="Description"
       :fieldValidator="descriptionInvalid"
       type="text"
-      name="title"
+      name="description"
       v-model.lazy.trim="description"
       inputType="textarea"
     />
@@ -49,7 +49,7 @@ export default {
         this.titleInvalid = 'Title must be at least 3 characters'
       } else if (this.title.length > 50) {
         this.titleInvalid = 'Title must be at most 50 characters'
-      } else if (this.$store.getters['getListTitles'].includes(this.title)) {
+      } else if (this.$store.getters['getTaskTitles'].includes(this.title)) {
         this.titleInvalid = 'Title is already in use'
       } else {
         this.titleInvalid = ''
@@ -58,11 +58,7 @@ export default {
       return false
     },
     validateDescription() {
-      if (this.description.length === 0) {
-        this.descriptionInvalid = 'Description is required'
-      } else if (this.description.length < 3) {
-        this.descriptionInvalid = 'Description must be at least 3 characters'
-      } else if (this.description.length > 100) {
+      if (this.description.length > 100) {
         this.descriptionInvalid = 'Description must be at most 100 characters'
       } else {
         this.descriptionInvalid = ''
