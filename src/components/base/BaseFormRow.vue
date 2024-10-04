@@ -2,7 +2,8 @@
   <div class="form-row">
     <div class="row-controls">
       <form-label :for="name" :text="label" :fieldValidator="fieldValidator" />
-      <input
+      <component
+        :is="inputType"
         :value="modelValue"
         :class="{ error_border: fieldValidator }"
         :type="type"
@@ -35,7 +36,11 @@ export default {
     type: String,
     label: String,
     name: String,
-    modelValue: String
+    modelValue: String,
+    inputType: {
+      type: String,
+      default: 'input'
+    }
   }
 }
 </script>
@@ -62,5 +67,17 @@ input {
   border: 1px solid var(--vt-c-black);
   color: inherit;
   font: inherit;
+  width: 12rem;
+}
+
+textarea {
+  background-color: var(--color-background-card);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--vt-c-black);
+  color: inherit;
+  font: inherit;
+  height: 10rem;
+  width: 12rem;
 }
 </style>

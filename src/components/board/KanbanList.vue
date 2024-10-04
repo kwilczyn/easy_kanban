@@ -8,16 +8,24 @@
       <li v-for="task in tasks" :key="task.id">
         <kanban-task :task="task" @removeTask="onRemoveTask" />
       </li>
+      <li id="addTaskButtonWrapper">
+        <base-button customType="add" @click="openAddTaskModal">+</base-button>
+        <base-modal v-if="isAddTaskModalVisible" open @closeModal="isAddTaskModalVisible = false">
+          <template #modalTitle>Add Task</template>
+          <add-task-form @submitAddTask="onSubmitAddTaskForm" />
+        </base-modal>
+      </li>
     </ul>
   </section>
 </template>
 
 <script>
 import KanbanTask from '@/components/board/KanbanTask.vue'
+import AddTaskForm from '@/components/forms/AddTaskForm.vue'
 import { mapActions } from 'vuex'
 
 export default {
-  components: { KanbanTask },
+  components: { KanbanTask, AddTaskForm },
   emits: ['removeList'],
   name: 'KanbanList',
   props: {
@@ -30,13 +38,26 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      isAddTaskModalVisible: false
+    }
+  },
   methods: {
-    ...mapActions(['removeTask']),
+    ...mapActions(['removeTask', 'addTask']),
     onRemoveTask(task) {
       this.removeTask({ listTitle: this.title, ...task })
     },
     removeList() {
       this.$emit('removeList', { title: this.title })
+    },
+    openAddTaskModal() {
+      this.isAddTaskModalVisible = true
+    },
+    onSubmitAddTaskForm(payload) {
+      console.log('onCloseAddTaskModal', payload)
+      this.addTask({ listTitle: this.title, ...payload })
+      this.isAddTaskModalVisible = false
     }
   }
 }

@@ -3,6 +3,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import KanbanTask from '@/components/board/KanbanTask.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
+import BaseModal from '@/components/base/BaseModal.vue'
 import KanbanList from '@/components/board/KanbanList.vue'
 import BaseDropdown from '@/components/base/BaseDropdown.vue'
 import { createStore } from 'vuex'
@@ -22,7 +23,7 @@ describe('KanbanList', () => {
 
   wrapper = mount(KanbanList, {
     global: {
-      components: { KanbanTask, BaseButton, BaseDropdown },
+      components: { KanbanTask, BaseButton, BaseDropdown, BaseModal },
       plugins: [mockStore],
       directives: {
         'click-outside': ClickOutsideDirective
