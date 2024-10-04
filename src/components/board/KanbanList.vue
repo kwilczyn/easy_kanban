@@ -12,7 +12,10 @@
         <base-button customType="add" @click="openAddTaskModal">+</base-button>
         <base-modal v-if="isAddTaskModalVisible" open @closeModal="isAddTaskModalVisible = false">
           <template #modalTitle>Add Task</template>
-          <add-task-form @submitAddTask="onSubmitAddTaskForm" />
+          <add-task-form
+            @submitAddTask="onSubmitAddTaskForm"
+            :existingTaskTitles="getTaskTitles(title)"
+          />
         </base-modal>
       </li>
     </ul>
@@ -22,7 +25,7 @@
 <script>
 import KanbanTask from '@/components/board/KanbanTask.vue'
 import AddTaskForm from '@/components/forms/AddTaskForm.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: { KanbanTask, AddTaskForm },
@@ -45,6 +48,7 @@ export default {
   },
   methods: {
     ...mapActions(['removeTask', 'addTask']),
+    ...mapGetters(['getTaskTitles']),
     onRemoveTask(task) {
       this.removeTask({ listTitle: this.title, ...task })
     },

@@ -23,6 +23,12 @@
 export default {
   emits: ['submitAddTask'],
   name: 'AddTaskForm',
+  props: {
+    existingTaskTitles: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       title: '',
@@ -49,7 +55,7 @@ export default {
         this.titleInvalid = 'Title must be at least 3 characters'
       } else if (this.title.length > 50) {
         this.titleInvalid = 'Title must be at most 50 characters'
-      } else if (this.$store.getters['getTaskTitles'].includes(this.title)) {
+      } else if (this.existingTaskTitles.includes(this.title)) {
         this.titleInvalid = 'Title is already in use'
       } else {
         this.titleInvalid = ''
