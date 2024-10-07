@@ -46,9 +46,11 @@ export default {
       isAddTaskModalVisible: false
     }
   },
+  computed: {
+    ...mapGetters(['getTaskTitles'])
+  },
   methods: {
     ...mapActions(['removeTask', 'addTask']),
-    ...mapGetters(['getTaskTitles']),
     onRemoveTask(task) {
       this.removeTask({ listTitle: this.title, ...task })
     },
