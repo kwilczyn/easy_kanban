@@ -19,6 +19,16 @@ export const mutations = {
       description: payload.description
     })
   },
+  updateTask(state, payload) {
+    const oldTaskIndex = state.activeBoard.lists
+      .find((list) => list.title === payload.listTitle)
+      .tasks.findIndex((task) => task.id === payload.taskId)
+    state.activeBoard.lists.find((list) => list.title === payload.listTitle).tasks[oldTaskIndex] = {
+      id: payload.taskId,
+      title: payload.title,
+      description: payload.description
+    }
+  },
   removeTask(state, payload) {
     const list = state.activeBoard.lists.find((list) => list.title === payload.listTitle)
     list.tasks = list.tasks.filter((task) => task.id !== payload.taskId)
@@ -38,6 +48,36 @@ export const getters = {
   getTaskTitles: (state) => (listTitle) => {
     const list = state.activeBoard.lists.find((list) => list.title === listTitle)
     return list.tasks.map((task) => task.title)
+  }
+}
+
+export const actions = {
+  addList(context, payload) {
+    if (!payload.title) {
+      throw new Error('title is required')
+    }
+    context.commit('addList', payload)
+  },
+  removeList(context, payload) {
+    if (!payload.title) {
+      throw new Error('title is required')
+    }
+    context.commit('removeList', payload)
+  },
+  removeTask(context, payload) {
+    if (!payload.listTitle || !payload.taskId) {
+      throw new Error('listTitle, taskId, are required')
+    }
+    context.commit('removeTask', payload)
+  },
+  addTask(context, payload) {
+    context.commit('addTask', payload)
+  },
+  updateTask(context, payload) {
+    if (!payload.listTitle || !payload.taskId) {
+      throw new Error('listTitle, taskId, are required')
+    }
+    context.commit('updateTask', payload)
   }
 }
 
@@ -70,20 +110,7 @@ const store = createStore({
   },
   getters,
   mutations,
-  actions: {
-    addList(context, payload) {
-      context.commit('addList', payload)
-    },
-    removeList(context, payload) {
-      context.commit('removeList', payload)
-    },
-    removeTask(context, payload) {
-      context.commit('removeTask', payload)
-    },
-    addTask(context, payload) {
-      context.commit('addTask', payload)
-    }
-  }
+  actions
 })
 
 export default store
