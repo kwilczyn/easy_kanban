@@ -50,4 +50,9 @@ export default class HomePage {
     await this.taskModal.updateTaskButton.click()
     await this.taskModal.backdrop.waitFor({ state: 'hidden' })
   }
+
+  async moveTask(listTitle, taskTitle, toListTitle) {
+    this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
+    await this.taskMenu.moveTaskSelect.selectOption(toListTitle)
+  }
 }

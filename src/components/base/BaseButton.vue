@@ -21,6 +21,7 @@ button {
   white-space: nowrap;
   background-color: transparent;
   transition: all 0.2s;
+  font-size: 1rem;
 }
 
 button:hover,

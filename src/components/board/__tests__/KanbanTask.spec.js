@@ -61,4 +61,11 @@ describe('KanbanTask', () => {
     await burger.trigger('click')
     expect(wrapper.findComponent(BaseDropdown).exists()).toBe(false)
   })
+  it('emits an event when moving task', async () => {
+    await wrapper.findComponent(BaseButton).trigger('click')
+    await wrapper.find('#selectMove').setValue('Done')
+    expect(wrapper.emitted('moveTask')).toBeTruthy()
+    expect(wrapper.emitted('moveTask')[0][0].to).toBe('Done')
+    expect(wrapper.emitted('moveTask')[0][0].taskId).toBe(1)
+  })
 })

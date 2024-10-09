@@ -26,5 +26,6 @@ export default {
   margin-bottom: 1rem;
   cursor: pointer;
   min-width: 10rem;
+  z-index: 10;
 }
 </style>

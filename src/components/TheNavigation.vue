@@ -44,16 +44,6 @@ nav {
   flex-wrap: wrap;
 }
 
-#selectBoard {
-  appearance: none;
-  padding: 0.5rem;
-  border: 1px solid #caced1;
-  border-radius: 0.25rem;
-  color: var(--text-color);
-  background-color: var(--background-color);
-  cursor: pointer;
-}
-
 @media (max-width: $mobile-device-size) {
   nav {
     font-size: large;

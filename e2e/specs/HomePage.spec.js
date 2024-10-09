@@ -32,3 +32,13 @@ test('edit a task', async ({ page }) => {
   await homePage.editTask('To Do', 'Task 1', 'My Task')
   await expect(homePage.listByTitle('To Do').taskByTitle('My Task')).toBeAttached()
 })
+
+test('move a task forward', async ({ page }) => {
+  await homePage.moveTask('To Do', 'Task 1', 'Done')
+  await expect(homePage.listByTitle('Done').taskByTitle('Task 1')).toBeAttached()
+})
+
+test('move a task backward', async ({ page }) => {
+  await homePage.moveTask('In Progress', 'Task 2', 'To Do')
+  await expect(homePage.listByTitle('To Do').taskByTitle('Task 2')).toBeAttached()
+})

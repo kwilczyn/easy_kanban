@@ -16,7 +16,8 @@ const mockStore = createStore({
     getTaskTitles: () => (listTitle) => ['Task 1', 'Task 2']
   },
   actions: {
-    removeTask: vi.fn()
+    removeTask: vi.fn(),
+    addTask: vi.fn()
   }
 })
 
@@ -109,5 +110,26 @@ describe('KanbanList', () => {
       title: 'Edited Task',
       description: 'This is the edited task.'
     })
+  })
+
+  it('activates moveTask action from the store when the moveTask event is emmited', async () => {
+    vi.spyOn(mockStore, 'dispatch')
+    await wrapper.findComponent(KanbanTask).vm.$emit('moveTask', {
+      taskId: 1,
+      to: 'Done'
+    })
+    expect(mockStore.dispatch).toHaveBeenCalledWith('moveTask', {
+      from: 'My List',
+      to: 'Done',
+      taskId: 1
+    })
+  })
+  it('does not activate moveTask action from the store if to is equal to from', async () => {
+    vi.spyOn(mockStore, 'dispatch')
+    await wrapper.findComponent(KanbanTask).vm.$emit('moveTask', {
+      taskId: 1,
+      to: 'My List'
+    })
+    expect(mockStore.dispatch).not.toHaveBeenCalled()
   })
 })

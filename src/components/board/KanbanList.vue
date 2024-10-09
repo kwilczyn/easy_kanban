@@ -6,7 +6,12 @@
     </header>
     <ul id="tasks-list">
       <li v-for="task in tasks" :key="task.id">
-        <kanban-task :task="task" @removeTask="onRemoveTask" @openEditModal="onOpenEditModal" />
+        <kanban-task
+          :task="task"
+          @removeTask="onRemoveTask"
+          @openEditModal="onOpenEditModal"
+          @moveTask="onMoveTask"
+        />
       </li>
       <li id="addTaskButtonWrapper">
         <base-button customType="add" @click="openAddTaskModal">+</base-button>
@@ -55,7 +60,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['removeTask', 'addTask', 'updateTask']),
+    ...mapActions(['removeTask', 'addTask', 'updateTask', 'moveTask']),
     onRemoveTask(task) {
       this.removeTask({ listTitle: this.title, ...task })
     },
@@ -80,6 +85,11 @@ export default {
     closeTaskModal() {
       this.isAddTaskModalVisible = false
       this.editedTask = {}
+    },
+    onMoveTask({ to, taskId }) {
+      if (to !== this.title) {
+        this.moveTask({ from: this.title, to, taskId })
+      }
     }
   }
 }

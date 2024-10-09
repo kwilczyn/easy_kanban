@@ -6,6 +6,11 @@
       <base-dropdown v-if="isDropdownVisible" v-click-outside="toggleDropdown">
         <base-button customType="delete" @click="removeTask">Delete Task</base-button>
         <base-button @click="editTask">Edit Task</base-button>
+        <label for="selectMove">Move to:</label>
+        <select id="selectMove" @change="onSelectionChange" name="selectMove">
+          <option value="" selected disabled hidden>Choose here</option>
+          <option v-for="title in getListTitles" :value="title">{{ title }}</option>
+        </select>
       </base-dropdown>
     </header>
     <div class="task-description">{{ task.description }}</div>
@@ -15,7 +20,7 @@
 <script>
 export default {
   name: 'KanbanTask',
-  emits: ['removeTask', 'openEditModal'],
+  emits: ['removeTask', 'openEditModal', 'moveTask'],
   props: {
     task: {
       type: Object,
@@ -27,6 +32,11 @@ export default {
       isDropdownVisible: false
     }
   },
+  computed: {
+    getListTitles() {
+      return this.$store.getters['getListTitles']
+    }
+  },
   methods: {
     toggleDropdown() {
       this.isDropdownVisible = !this.isDropdownVisible
@@ -36,6 +46,9 @@ export default {
     },
     editTask() {
       this.$emit('openEditModal', this.task)
+    },
+    onSelectionChange(event) {
+      this.$emit('moveTask', { to: event.target.value, taskId: this.task.id })
     }
   }
 }
@@ -55,5 +68,13 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+nav label,
+nav select {
+  text-align: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
 }
 </style>

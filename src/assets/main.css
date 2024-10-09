@@ -14,3 +14,13 @@
 .error_border {
   border-color: var(--color-error) !important;
 }
+
+select {
+  appearance: none;
+  padding: 0.5rem;
+  border: 1px solid #caced1;
+  border-radius: 0.25rem;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  cursor: pointer;
+}

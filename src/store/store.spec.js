@@ -68,6 +68,13 @@ describe('mutations', () => {
     expect(state.activeBoard.lists[0].tasks[0].title).toBe('Updated Task')
     expect(state.activeBoard.lists[0].tasks[0].description).toBe('This is an updated task.')
   })
+
+  it('moveTask', () => {
+    const { moveTask } = mutations
+    moveTask(state, { from: 'To Do', to: 'In Progress', taskId: 1 })
+    expect(state.activeBoard.lists[0].tasks.length).toBe(1)
+    expect(state.activeBoard.lists[1].tasks.length).toBe(2)
+  })
 })
 
 describe('getters', () => {
@@ -178,5 +185,30 @@ describe('actions', () => {
         description: 'This is an updated task.'
       })
     ).toThrow()
+  })
+
+  it('moveTask', () => {
+    const { moveTask } = actions
+    moveTask(context, { from: 'To Do', to: 'In Progress', taskId: 1 })
+    expect(context.commit).toHaveBeenCalledWith('moveTask', {
+      from: 'To Do',
+      to: 'In Progress',
+      taskId: 1
+    })
+  })
+
+  it('does not move task if from is missing', () => {
+    const { moveTask } = actions
+    expect(() => moveTask(context, { to: 'In Progress', taskId: 1 })).toThrow()
+  })
+
+  it('does not move task if to is missing', () => {
+    const { moveTask } = actions
+    expect(() => moveTask(context, { from: 'To Do', taskId: 1 })).toThrow()
+  })
+
+  it('does not move task if taskId is missing', () => {
+    const { moveTask } = actions
+    expect(() => moveTask(context, { from: 'To Do', to: 'In Progress' })).toThrow()
   })
 })

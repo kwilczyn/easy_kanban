@@ -32,6 +32,13 @@ export const mutations = {
   removeTask(state, payload) {
     const list = state.activeBoard.lists.find((list) => list.title === payload.listTitle)
     list.tasks = list.tasks.filter((task) => task.id !== payload.taskId)
+  },
+  moveTask(state, payload) {
+    const fromList = state.activeBoard.lists.find((list) => list.title === payload.from)
+    const toList = state.activeBoard.lists.find((list) => list.title === payload.to)
+    const task = fromList.tasks.find((task) => task.id === payload.taskId)
+    fromList.tasks = fromList.tasks.filter((task) => task.id !== payload.taskId)
+    toList.tasks.push(task)
   }
 }
 
@@ -78,6 +85,12 @@ export const actions = {
       throw new Error('listTitle, taskId, are required')
     }
     context.commit('updateTask', payload)
+  },
+  moveTask(context, payload) {
+    if (!payload.from || !payload.to || !payload.taskId) {
+      throw new Error('from, to, taskId are required')
+    }
+    context.commit('moveTask', payload)
   }
 }
 
