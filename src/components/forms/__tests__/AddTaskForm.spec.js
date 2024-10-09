@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 
 import { mount } from '@vue/test-utils'
 
-import AddTaskForm from '@/components/forms/AddTaskForm.vue'
+import TaskForm from '@/components/forms/TaskForm.vue'
 import BaseFormRow from '@/components/base/BaseFormRow.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseFormLabel from '@/components/base/BaseFormLabel.vue'
@@ -11,7 +11,7 @@ describe('AddTaskForm', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(AddTaskForm, {
+    wrapper = mount(TaskForm, {
       global: {
         components: { BaseFormRow, BaseButton, BaseFormLabel }
       },
@@ -30,6 +30,7 @@ describe('AddTaskForm', () => {
     await wrapper.find('textarea[name="description"]').setValue('This is a task description.')
     await wrapper.find('form').trigger('submit.prevent')
     expect(wrapper.emitted('submitAddTask')[0][0]).toEqual({
+      taskId: '',
       title: 'My Task',
       description: 'This is a task description.'
     })
@@ -68,5 +69,21 @@ describe('AddTaskForm', () => {
   it("doesn't submit a task if the form is invalid", async () => {
     await wrapper.find('form').trigger('submit.prevent')
     expect(wrapper.emitted('submitAddTask')).toBeUndefined()
+  })
+
+  it('renders data from the existing task when editing', () => {
+    wrapper = mount(TaskForm, {
+      global: {
+        components: { BaseFormRow, BaseButton, BaseFormLabel }
+      },
+      props: {
+        existingTaskTitles: ['Task 1', 'Task 2'],
+        task: { id: 99, title: 'Task 1', description: 'This is a task description.' }
+      }
+    })
+    expect(wrapper.find('input[name="title"]').element.value).toBe('Task 1')
+    expect(wrapper.find('textarea[name="description"]').element.value).toBe(
+      'This is a task description.'
+    )
   })
 })

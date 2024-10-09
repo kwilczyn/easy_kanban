@@ -27,3 +27,8 @@ test('remove a task', async ({ page }) => {
   await homePage.removeTask('To Do', 'Task 1')
   await expect(homePage.listByTitle('To Do').taskByTitle('Task 1')).not.toBeAttached()
 })
+
+test('edit a task', async ({ page }) => {
+  await homePage.editTask('To Do', 'Task 1', 'My Task')
+  await expect(homePage.listByTitle('To Do').taskByTitle('My Task')).toBeAttached()
+})

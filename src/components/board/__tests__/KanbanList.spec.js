@@ -6,12 +6,14 @@ import BaseButton from '@/components/base/BaseButton.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
 import KanbanList from '@/components/board/KanbanList.vue'
 import BaseDropdown from '@/components/base/BaseDropdown.vue'
+import TaskForm from '@/components/forms/TaskForm.vue'
 import { createStore } from 'vuex'
 import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
 
 const mockStore = createStore({
   getters: {
-    getListTitles: () => ['To Do', 'In Progress', 'Done']
+    getListTitles: () => ['To Do', 'In Progress', 'Done'],
+    getTaskTitles: () => (listTitle) => ['Task 1', 'Task 2']
   },
   actions: {
     removeTask: vi.fn()
@@ -23,7 +25,7 @@ describe('KanbanList', () => {
 
   wrapper = mount(KanbanList, {
     global: {
-      components: { KanbanTask, BaseButton, BaseDropdown, BaseModal },
+      components: { KanbanTask, BaseButton, BaseDropdown, BaseModal, TaskForm },
       plugins: [mockStore],
       directives: {
         'click-outside': ClickOutsideDirective
@@ -65,6 +67,47 @@ describe('KanbanList', () => {
     expect(mockStore.dispatch).toHaveBeenCalledWith('removeTask', {
       listTitle: 'My List',
       taskId: 1
+    })
+  })
+
+  it('opens the modal when the add task button is clicked', async () => {
+    await wrapper.find('button[customType="add"]').trigger('click')
+    expect(wrapper.findComponent(BaseModal).exists()).toBe(true)
+  })
+
+  it('activates addTask action from the store when the addTask event is emmited', async () => {
+    vi.spyOn(mockStore, 'dispatch')
+    await wrapper.find('button[customType="add"]').trigger('click')
+    await wrapper.findComponent(TaskForm).vm.$emit('submitAddTask', {
+      taskId: '',
+      title: 'New Task',
+      description: 'This is a new task.'
+    })
+    expect(mockStore.dispatch).toHaveBeenCalledWith('addTask', {
+      listTitle: 'My List',
+      taskId: '',
+      title: 'New Task',
+      description: 'This is a new task.'
+    })
+  })
+
+  it('activates updateTask action from the store when the editTask event is emmited', async () => {
+    vi.spyOn(mockStore, 'dispatch')
+    await wrapper.findComponent(KanbanTask).vm.$emit('openEditModal', {
+      id: 1,
+      title: 'Task 1',
+      description: 'This is a task description.'
+    })
+    await wrapper.findComponent(TaskForm).vm.$emit('submitAddTask', {
+      taskId: 1,
+      title: 'Edited Task',
+      description: 'This is the edited task.'
+    })
+    expect(mockStore.dispatch).toHaveBeenCalledWith('updateTask', {
+      listTitle: 'My List',
+      taskId: 1,
+      title: 'Edited Task',
+      description: 'This is the edited task.'
     })
   })
 })

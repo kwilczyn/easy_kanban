@@ -5,7 +5,7 @@
       <base-button customType="burger" @click.stop="toggleDropdown"></base-button>
       <base-dropdown v-if="isDropdownVisible" v-click-outside="toggleDropdown">
         <base-button customType="delete" @click="removeTask">Delete Task</base-button>
-        <base-button>Edit Task</base-button>
+        <base-button @click="editTask">Edit Task</base-button>
       </base-dropdown>
     </header>
     <div class="task-description">{{ task.description }}</div>
@@ -15,7 +15,7 @@
 <script>
 export default {
   name: 'KanbanTask',
-  emits: ['removeTask'],
+  emits: ['removeTask', 'openEditModal'],
   props: {
     task: {
       type: Object,
@@ -33,6 +33,9 @@ export default {
     },
     removeTask() {
       this.$emit('removeTask', { taskId: this.task.id })
+    },
+    editTask() {
+      this.$emit('openEditModal', this.task)
     }
   }
 }

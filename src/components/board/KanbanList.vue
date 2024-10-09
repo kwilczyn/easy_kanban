@@ -6,15 +6,16 @@
     </header>
     <ul id="tasks-list">
       <li v-for="task in tasks" :key="task.id">
-        <kanban-task :task="task" @removeTask="onRemoveTask" />
+        <kanban-task :task="task" @removeTask="onRemoveTask" @openEditModal="onOpenEditModal" />
       </li>
       <li id="addTaskButtonWrapper">
         <base-button customType="add" @click="openAddTaskModal">+</base-button>
-        <base-modal v-if="isAddTaskModalVisible" open @closeModal="isAddTaskModalVisible = false">
-          <template #modalTitle>Add Task</template>
-          <add-task-form
+        <base-modal v-if="isAddTaskModalVisible" open @closeModal="closeTaskModal">
+          <template #modalTitle>{{ isEditMode ? 'Edit Task' : 'Add Task' }}</template>
+          <task-form
             @submitAddTask="onSubmitAddTaskForm"
             :existingTaskTitles="getTaskTitles(title)"
+            :task="editedTask"
           />
         </base-modal>
       </li>
@@ -24,11 +25,11 @@
 
 <script>
 import KanbanTask from '@/components/board/KanbanTask.vue'
-import AddTaskForm from '@/components/forms/AddTaskForm.vue'
+import TaskForm from '@/components/forms/TaskForm.vue'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  components: { KanbanTask, AddTaskForm },
+  components: { KanbanTask, TaskForm },
   emits: ['removeList'],
   name: 'KanbanList',
   props: {
@@ -43,14 +44,18 @@ export default {
   },
   data() {
     return {
-      isAddTaskModalVisible: false
+      isAddTaskModalVisible: false,
+      editedTask: {}
     }
   },
   computed: {
-    ...mapGetters(['getTaskTitles'])
+    ...mapGetters(['getTaskTitles']),
+    isEditMode() {
+      return this.editedTask.id ? true : false
+    }
   },
   methods: {
-    ...mapActions(['removeTask', 'addTask']),
+    ...mapActions(['removeTask', 'addTask', 'updateTask']),
     onRemoveTask(task) {
       this.removeTask({ listTitle: this.title, ...task })
     },
@@ -61,9 +66,20 @@ export default {
       this.isAddTaskModalVisible = true
     },
     onSubmitAddTaskForm(payload) {
-      console.log('onCloseAddTaskModal', payload)
-      this.addTask({ listTitle: this.title, ...payload })
+      if (this.isEditMode) {
+        this.updateTask({ listTitle: this.title, ...payload })
+      } else {
+        this.addTask({ listTitle: this.title, ...payload })
+      }
+      this.closeTaskModal()
+    },
+    onOpenEditModal(task) {
+      this.editedTask = task
+      this.isAddTaskModalVisible = true
+    },
+    closeTaskModal() {
       this.isAddTaskModalVisible = false
+      this.editedTask = {}
     }
   }
 }
