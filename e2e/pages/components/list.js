@@ -9,5 +9,6 @@ export default function listByTitle(page, title) {
   }
   list.removeListButton = list.locator('header').getByRole('button', { name: 'X' })
   list.addTaskButton = list.getByRole('button', { name: '+' })
+  list.header = list.getByRole('heading').first()
   return list
 }

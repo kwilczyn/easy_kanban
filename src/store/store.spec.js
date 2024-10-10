@@ -75,6 +75,15 @@ describe('mutations', () => {
     expect(state.activeBoard.lists[0].tasks.length).toBe(1)
     expect(state.activeBoard.lists[1].tasks.length).toBe(2)
   })
+
+  it('moveTaskAbove', () => {
+    const { moveTaskAbove } = mutations
+    moveTaskAbove(state, { taskId: 2, targetTaskId: 1 })
+    expect(state.activeBoard.lists[0].tasks[0].id).toBe(2)
+    expect(state.activeBoard.lists[0].tasks[1].id).toBe(1)
+    console.log(state.activeBoard.lists)
+    expect(state.activeBoard.lists[1].tasks.length).toBe(0)
+  })
 })
 
 describe('getters', () => {
@@ -197,18 +206,34 @@ describe('actions', () => {
     })
   })
 
-  it('does not move task if from is missing', () => {
+  it('moveTask does not move task if from is missing', () => {
     const { moveTask } = actions
     expect(() => moveTask(context, { to: 'In Progress', taskId: 1 })).toThrow()
   })
 
-  it('does not move task if to is missing', () => {
+  it('moveTask does not move task if to is missing', () => {
     const { moveTask } = actions
     expect(() => moveTask(context, { from: 'To Do', taskId: 1 })).toThrow()
   })
 
-  it('does not move task if taskId is missing', () => {
+  it('moveTask does not move task if taskId is missing', () => {
     const { moveTask } = actions
     expect(() => moveTask(context, { from: 'To Do', to: 'In Progress' })).toThrow()
+  })
+
+  it('moveTaskAbove', () => {
+    const { moveTaskAbove } = actions
+    moveTaskAbove(context, { taskId: 2, targetTaskId: 1 })
+    expect(context.commit).toHaveBeenCalledWith('moveTaskAbove', { taskId: 2, targetTaskId: 1 })
+  })
+
+  it('moveTaskAbove does not move task if taskId is missing', () => {
+    const { moveTaskAbove } = actions
+    expect(() => moveTaskAbove(context, { targetTaskId: 1 })).toThrow()
+  })
+
+  it('moveTaskAbove does not move task if targetTaskId is missing', () => {
+    const { moveTaskAbove } = actions
+    expect(() => moveTaskAbove(context, { taskId: 2 })).toThrow()
   })
 })

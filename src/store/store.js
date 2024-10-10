@@ -39,6 +39,21 @@ export const mutations = {
     const task = fromList.tasks.find((task) => task.id === payload.taskId)
     fromList.tasks = fromList.tasks.filter((task) => task.id !== payload.taskId)
     toList.tasks.push(task)
+  },
+  moveTaskAbove(state, { taskId, targetTaskId }) {
+    taskId = Number(taskId)
+    targetTaskId = Number(targetTaskId)
+    const task = state.activeBoard.lists
+      .flatMap((list) => list.tasks)
+      .find((task) => task.id === taskId)
+    const targetTask = state.activeBoard.lists
+      .flatMap((list) => list.tasks)
+      .find((task) => task.id === targetTaskId)
+    const targetList = state.activeBoard.lists.find((list) => list.tasks.includes(targetTask))
+    const list = state.activeBoard.lists.find((list) => list.tasks.includes(task))
+    list.tasks = list.tasks.filter((task) => task.id !== taskId)
+    const targetIndex = targetList.tasks.findIndex((task) => task.id === targetTaskId)
+    targetList.tasks.splice(targetIndex, 0, task)
   }
 }
 
@@ -91,6 +106,12 @@ export const actions = {
       throw new Error('from, to, taskId are required')
     }
     context.commit('moveTask', payload)
+  },
+  moveTaskAbove(context, { taskId, targetTaskId }) {
+    if (!taskId || !targetTaskId) {
+      throw new Error('taskId, targetTaskId are required')
+    }
+    context.commit('moveTaskAbove', { taskId, targetTaskId })
   }
 }
 

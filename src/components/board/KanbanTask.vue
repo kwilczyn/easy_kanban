@@ -1,5 +1,5 @@
 <template>
-  <div class="kanban-task">
+  <div class="kanban-task" @drop="onDrop" @dragover.prevent @dragenter.prevent>
     <header class="kanban-task__header">
       <h3>{{ task.title }}</h3>
       <base-button customType="burger" @click.stop="toggleDropdown"></base-button>
@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'KanbanTask',
   emits: ['removeTask', 'openEditModal', 'moveTask'],
@@ -38,6 +40,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['moveTaskAbove']),
     toggleDropdown() {
       this.isDropdownVisible = !this.isDropdownVisible
     },
@@ -49,6 +52,11 @@ export default {
     },
     onSelectionChange(event) {
       this.$emit('moveTask', { to: event.target.value, taskId: this.task.id })
+    },
+    onDrop(event) {
+      const taskId = event.dataTransfer.getData('taskId')
+      this.moveTaskAbove({ taskId: taskId, targetTaskId: this.task.id })
+      event.stopPropagation()
     }
   }
 }

@@ -101,6 +101,7 @@ export default {
       const taskId = event.dataTransfer.getData('taskId')
       const from = event.dataTransfer.getData('from')
       this.moveTask({ from: from, to: this.title, taskId: Number(taskId) })
+      event.stopPropagation()
     },
     startDrag(event) {
       event.dataTransfer.dropEffect = 'move'
