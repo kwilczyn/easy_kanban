@@ -1,11 +1,17 @@
 <template>
-  <section class="kanban-list">
+  <section class="kanban-list" @drop="onDrop" @dragover.prevent @dragenter.prevent>
     <header>
       <h2>{{ title }}</h2>
       <base-button customType="delete" @click="removeList">X</base-button>
     </header>
     <ul id="tasks-list">
-      <li v-for="task in tasks" :key="task.id">
+      <li
+        v-for="task in tasks"
+        :key="task.id"
+        draggable="true"
+        :id="task.id"
+        @dragstart="startDrag"
+      >
         <kanban-task
           :task="task"
           @removeTask="onRemoveTask"
@@ -90,6 +96,17 @@ export default {
       if (to !== this.title) {
         this.moveTask({ from: this.title, to, taskId })
       }
+    },
+    onDrop(event) {
+      const taskId = event.dataTransfer.getData('taskId')
+      const from = event.dataTransfer.getData('from')
+      this.moveTask({ from: from, to: this.title, taskId: Number(taskId) })
+    },
+    startDrag(event) {
+      event.dataTransfer.dropEffect = 'move'
+      event.dataTransfer.effectAllowed = 'move'
+      event.dataTransfer.setData('taskId', event.target.id)
+      event.dataTransfer.setData('from', this.title)
     }
   }
 }
