@@ -26,6 +26,22 @@
             :task="editedTask"
           />
         </base-modal>
+        <div id="list-nav-buttons">
+          <base-button
+            v-if="!first"
+            customType="nav-arrow"
+            aria-roledescription="Move list backward"
+            @click="moveListBackward({ listTitle: title })"
+            >&#11013;&#xFE0E;</base-button
+          >
+          <base-button
+            v-if="!last"
+            customType="nav-arrow"
+            aria-roledescription="Move list forward"
+            @click="moveListForward({ listTitle: title })"
+            >&#x2B95;&#xFE0E;</base-button
+          >
+        </div>
       </li>
     </ul>
   </section>
@@ -48,6 +64,14 @@ export default {
     tasks: {
       type: Array,
       required: true
+    },
+    first: {
+      type: Boolean,
+      default: false
+    },
+    last: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -63,7 +87,14 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['removeTask', 'addTask', 'updateTask', 'moveTask']),
+    ...mapActions([
+      'removeTask',
+      'addTask',
+      'updateTask',
+      'moveTask',
+      'moveListBackward',
+      'moveListForward'
+    ]),
     onRemoveTask(task) {
       this.removeTask({ listTitle: this.title, ...task })
     },
@@ -135,5 +166,17 @@ header {
   list-style-type: none;
   padding: 0;
   margin: 0;
+}
+
+#addTaskButtonWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#list-nav-buttons {
+  display: flex;
+  gap: 1rem;
 }
 </style>

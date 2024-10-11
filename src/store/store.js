@@ -54,6 +54,18 @@ export const mutations = {
     list.tasks = list.tasks.filter((task) => task.id !== taskId)
     const targetIndex = targetList.tasks.findIndex((task) => task.id === targetTaskId)
     targetList.tasks.splice(targetIndex, 0, task)
+  },
+  moveListBackward(state, { listTitle }) {
+    const listIndex = state.activeBoard.lists.findIndex((list) => list.title === listTitle)
+    const list = state.activeBoard.lists[listIndex]
+    state.activeBoard.lists[listIndex] = state.activeBoard.lists[listIndex - 1]
+    state.activeBoard.lists[listIndex - 1] = list
+  },
+  moveListForward(state, { listTitle }) {
+    const listIndex = state.activeBoard.lists.findIndex((list) => list.title === listTitle)
+    const list = state.activeBoard.lists[listIndex]
+    state.activeBoard.lists[listIndex] = state.activeBoard.lists[listIndex + 1]
+    state.activeBoard.lists[listIndex + 1] = list
   }
 }
 
@@ -112,6 +124,25 @@ export const actions = {
       throw new Error('taskId, targetTaskId are required')
     }
     context.commit('moveTaskAbove', { taskId, targetTaskId })
+  },
+  moveListBackward(context, payload) {
+    if (!payload.listTitle) {
+      throw new Error('listTitle is required')
+    }
+    // do not move the first list
+    if (context.getters.getListTitles[0] === payload.listTitle) return
+    context.commit('moveListBackward', payload)
+  },
+  moveListForward(context, payload) {
+    if (!payload.listTitle) {
+      throw new Error('listTitle is required')
+    }
+    // do not move the last list
+    if (
+      context.getters.getListTitles[context.getters.getListTitles.length - 1] === payload.listTitle
+    )
+      return
+    context.commit('moveListForward', payload)
   }
 }
 

@@ -62,4 +62,13 @@ button:focus {
   min-width: 5.2rem;
   font-size: inherit;
 }
+
+.nav-arrow {
+  background-color: var(--color-nav-buttons);
+  box-shadow: 1px 1px 1px 0px rgba(0, 0, 0, 0.1);
+  border: none;
+  color: var(--color-text);
+  font-weight: bold;
+  font-family: Helvetica, sans-serif;
+}
 </style>

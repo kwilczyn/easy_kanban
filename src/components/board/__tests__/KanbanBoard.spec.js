@@ -17,7 +17,8 @@ const mockStore = createStore({
     getListTitles: () => ['To Do', 'In Progress', 'Done']
   },
   actions: {
-    moveTaskAbove: vi.fn()
+    moveTaskAbove: vi.fn(),
+    moveTask: vi.fn()
   }
 })
 

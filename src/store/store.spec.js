@@ -8,6 +8,7 @@ const initialState = {
     title: 'My Simple Kanban Board',
     lists: [
       {
+        id: 1,
         title: 'To Do',
         tasks: [
           { id: 1, title: 'Task 1', description: 'This is a task description.' },
@@ -15,10 +16,12 @@ const initialState = {
         ]
       },
       {
+        id: 4,
         title: 'In Progress',
         tasks: [{ id: 2, title: 'Task 2', description: 'This is the second task description.' }]
       },
       {
+        id: 18,
         title: 'Done',
         tasks: [{ id: 3, title: 'Task 3', description: 'This is the third task description.' }]
       }
@@ -81,8 +84,19 @@ describe('mutations', () => {
     moveTaskAbove(state, { taskId: 2, targetTaskId: 1 })
     expect(state.activeBoard.lists[0].tasks[0].id).toBe(2)
     expect(state.activeBoard.lists[0].tasks[1].id).toBe(1)
-    console.log(state.activeBoard.lists)
     expect(state.activeBoard.lists[1].tasks.length).toBe(0)
+  })
+
+  it('moveListBackward', () => {
+    const { moveListBackward } = mutations
+    moveListBackward(state, { listTitle: 'In Progress' })
+    expect(state.activeBoard.lists[0].title).toBe('In Progress')
+  })
+
+  it('moveListForward', () => {
+    const { moveListForward } = mutations
+    moveListForward(state, { listTitle: 'In Progress' })
+    expect(state.activeBoard.lists[2].title).toBe('In Progress')
   })
 })
 
@@ -103,10 +117,17 @@ describe('actions', () => {
 
   beforeEach(() => {
     state = structuredClone(initialState)
+    let computedGetters = {}
+    Object.keys(getters).forEach((key) => {
+      Object.defineProperty(computedGetters, key, {
+        get: () => getters[key](state)
+      })
+    })
     context = {
       state,
       commit: vi.fn(),
-      dispatch: vi.fn()
+      dispatch: vi.fn(),
+      getters: computedGetters
     }
   })
 
@@ -235,5 +256,39 @@ describe('actions', () => {
   it('moveTaskAbove does not move task if targetTaskId is missing', () => {
     const { moveTaskAbove } = actions
     expect(() => moveTaskAbove(context, { taskId: 2 })).toThrow()
+  })
+
+  it('moveListBackward', () => {
+    const { moveListBackward } = actions
+    moveListBackward(context, { listTitle: 'In Progress' })
+    expect(context.commit).toHaveBeenCalledWith('moveListBackward', { listTitle: 'In Progress' })
+  })
+
+  it('moveListBackward does not move list if listTitle is missing', () => {
+    const { moveListBackward } = actions
+    expect(() => moveListBackward(context, {})).toThrow()
+  })
+
+  it('moveListBackward does not move list for the leftmost list', () => {
+    const { moveListBackward } = actions
+    moveListBackward(context, { listTitle: 'To Do' })
+    expect(context.commit).not.toHaveBeenCalled()
+  })
+
+  it('moveListForward', () => {
+    const { moveListForward } = actions
+    moveListForward(context, { listTitle: 'In Progress' })
+    expect(context.commit).toHaveBeenCalledWith('moveListForward', { listTitle: 'In Progress' })
+  })
+
+  it('moveListForward does not move list if listTitle is missing', () => {
+    const { moveListForward } = actions
+    expect(() => moveListForward(context, {})).toThrow()
+  })
+
+  it('moveListForward does not move list for the rightmost list', () => {
+    const { moveListForward } = actions
+    moveListForward(context, { listTitle: 'Done' })
+    expect(context.commit).not.toHaveBeenCalled()
   })
 })

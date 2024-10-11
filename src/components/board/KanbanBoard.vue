@@ -9,11 +9,13 @@
       @leave="onLeave"
     >
       <kanban-list
-        v-for="list in lists"
+        v-for="(list, index) in lists"
         :key="list.title"
         :title="list.title"
         :tasks="list.tasks"
         @removeList="removeList"
+        :first="index === 0"
+        :last="index === lists.length - 1"
       />
     </transition-group>
     <div id="add-list-button-container">
