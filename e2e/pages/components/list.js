@@ -10,5 +10,7 @@ export default function listByTitle(page, title) {
   list.removeListButton = list.locator('header').getByRole('button', { name: 'X' })
   list.addTaskButton = list.getByRole('button', { name: '+' })
   list.header = list.getByRole('heading').first()
+  list.leftArrowButton = list.locator('button[aria-roledescription="Move list backward"]')
+  list.rightArrowButton = list.locator('button[aria-roledescription="Move list forward"]')
   return list
 }

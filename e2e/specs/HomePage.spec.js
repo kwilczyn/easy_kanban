@@ -75,3 +75,13 @@ test('move a task into an empty list', async ({ page }) => {
     .dragTo(homePage.listByTitle('Test List'))
   expect(homePage.listByTitle('Test List').taskByTitle('Task 1')).toBeAttached()
 })
+
+test('move a list backward', async ({ page }) => {
+  await homePage.listByTitle('In Progress').leftArrowButton.click()
+  await expect(homePage.listByTitle('').first()).toContainText('In Progress')
+})
+
+test('move a list forward', async ({ page }) => {
+  await homePage.listByTitle('In Progress').rightArrowButton.click()
+  await expect(homePage.listByTitle('').last()).toContainText('In Progress')
+})
