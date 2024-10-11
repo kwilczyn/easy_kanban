@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 
-import { mount } from '@vue/test-utils'
+import { mount, shallowMount } from '@vue/test-utils'
 import KanbanTask from '@/components/board/KanbanTask.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
@@ -18,7 +18,8 @@ const mockStore = createStore({
   actions: {
     removeTask: vi.fn(),
     addTask: vi.fn(),
-    moveTask: vi.fn()
+    moveTask: vi.fn(),
+    updateTask: vi.fn()
   }
 })
 
@@ -133,5 +134,39 @@ describe('KanbanList', () => {
       to: 'My List'
     })
     expect(mockStore.dispatch).not.toHaveBeenCalled()
+  })
+
+  it('does not show left arrow if the list is the first list', async () => {
+    wrapper = shallowMount(KanbanList, {
+      global: {
+        plugins: [mockStore],
+        components: { BaseButton },
+        stubs: { BaseModal: true, TaskForm: true }
+      },
+      props: {
+        title: 'My List',
+        tasks: [],
+        first: true
+      }
+    })
+    expect(wrapper.find('[aria-roledescription="Move list backward"]').exists()).toBe(false)
+  })
+
+  it('does not show right arrow if the list is the last list', async () => {
+    wrapper = shallowMount(KanbanList, {
+      global: {
+        plugins: [mockStore],
+        components: { BaseButton },
+        stubs: { BaseModal: true, TaskForm: true }
+      },
+      plugins: [mockStore],
+
+      props: {
+        title: 'My List',
+        tasks: [],
+        last: true
+      }
+    })
+    expect(wrapper.find('[aria-roledescription="Move list forward"]').exists()).toBe(false)
   })
 })
