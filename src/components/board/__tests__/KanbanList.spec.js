@@ -7,6 +7,7 @@ import BaseModal from '@/components/base/BaseModal.vue'
 import KanbanList from '@/components/board/KanbanList.vue'
 import BaseDropdown from '@/components/base/BaseDropdown.vue'
 import TaskForm from '@/components/forms/TaskForm.vue'
+import BaseFormRow from '@/components/base/BaseFormRow.vue'
 import { createStore } from 'vuex'
 import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
 
@@ -28,7 +29,7 @@ describe('KanbanList', () => {
 
   wrapper = mount(KanbanList, {
     global: {
-      components: { KanbanTask, BaseButton, BaseDropdown, BaseModal, TaskForm },
+      components: { KanbanTask, BaseButton, BaseDropdown, BaseModal, TaskForm, BaseFormRow },
       plugins: [mockStore],
       directives: {
         'click-outside': ClickOutsideDirective
