@@ -17,7 +17,8 @@ const mockStore = createStore({
   },
   actions: {
     removeTask: vi.fn(),
-    addTask: vi.fn()
+    addTask: vi.fn(),
+    moveTask: vi.fn()
   }
 })
 
@@ -124,6 +125,7 @@ describe('KanbanList', () => {
       taskId: 1
     })
   })
+
   it('does not activate moveTask action from the store if to is equal to from', async () => {
     vi.spyOn(mockStore, 'dispatch')
     await wrapper.findComponent(KanbanTask).vm.$emit('moveTask', {
