@@ -5,18 +5,15 @@
       <base-button customType="delete" @click="removeList">X</base-button>
     </header>
     <ul id="tasks-list">
-      <li
-        v-for="task in tasks"
-        :key="task.id"
-        draggable="true"
-        :id="task.id"
-        @dragstart="startDrag"
-      >
+      <li v-for="task in tasks" :key="task.id">
         <kanban-task
+          draggable="true"
           :task="task"
+          :id="task.id"
           @removeTask="onRemoveTask"
           @openEditModal="onOpenEditModal"
           @moveTask="onMoveTask"
+          @dragstart="startDrag"
         />
       </li>
       <li id="addTaskButtonWrapper">
@@ -106,7 +103,7 @@ export default {
     startDrag(event) {
       event.dataTransfer.dropEffect = 'move'
       event.dataTransfer.effectAllowed = 'move'
-      event.dataTransfer.setData('taskId', event.target.id)
+      event.dataTransfer.setData('taskId', Number(event.target.id))
       event.dataTransfer.setData('from', this.title)
     }
   }
