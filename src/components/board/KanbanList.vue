@@ -18,7 +18,7 @@
       </li>
       <li id="addTaskButtonWrapper">
         <base-button customType="add" @click="openAddTaskModal">+</base-button>
-        <base-modal v-if="isAddTaskModalVisible" open @closeModal="closeTaskModal">
+        <base-modal v-if="isAddTaskModalVisible" @closeModal="closeTaskModal">
           <template #modalTitle>{{ isEditMode ? 'Edit Task' : 'Add Task' }}</template>
           <task-form
             @submitAddTask="onSubmitAddTaskForm"
