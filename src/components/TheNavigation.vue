@@ -4,8 +4,8 @@
       <div class="logo">Easy Kanban</div>
       <form class="nav-form">
         <label for="selectBoard">Select a board:</label>
-        <select id="selectBoard" type="select">
-          <option value="My Simple Kanban Board!">My Simple Kanban Board!</option>
+        <select id="selectBoard" v-model="selectedBoard" name="selectBoard">
+          <option v-for="value in getBoardNames" :value="value">{{ value }}</option>
         </select>
       </form>
       <base-button customType="navigation">Log in</base-button>
@@ -14,11 +14,29 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+
 export default {
   name: 'TheNavigation',
+  computed: {
+    ...mapGetters(['getBoardNames'])
+  },
   data() {
     return {
-      selectedBoard: 'My Simple Kanban Board!'
+      selectedBoard: ''
+    }
+  },
+  created() {
+    if (this.getBoardNames.length > 0) {
+      this.selectedBoard = this.getBoardNames[0]
+    }
+  },
+  watch: {
+    selectedBoard(newValue, oldValue) {
+      if (newValue !== oldValue) {
+        const bid = this.$store.state.boards.filter((board) => board.title === newValue)[0].id
+        this.$store.dispatch('fetchBoard', { boardId: bid })
+      }
     }
   }
 }
