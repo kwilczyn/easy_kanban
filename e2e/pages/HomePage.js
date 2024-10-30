@@ -6,10 +6,12 @@ import TaskMenu from './modals/TaskMenu.js'
 export default class HomePage {
   constructor(page) {
     this.page = page
+    this.boardSelect = page.getByLabel('Select a board')
     this.addListButton = page.getByRole('button', { name: '+' }).last()
     this.addListModal = new AddListModal(page)
     this.taskModal = new AddTaskModal(page)
     this.taskMenu = new TaskMenu(page)
+    this.errorModal = page.getByRole('alert', { name: 'Error' })
     this.listByTitle = (title) => {
       return listByTitle(page, title)
     }
@@ -27,7 +29,7 @@ export default class HomePage {
   }
 
   async removeList(title) {
-    this.listByTitle(title).removeListButton.click()
+    await this.listByTitle(title).removeListButton.click()
   }
 
   async addTask(listTitle, taskTitle) {
@@ -39,20 +41,24 @@ export default class HomePage {
   }
 
   async removeTask(listTitle, taskTitle) {
-    this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
-    this.taskMenu.removeTaskButton.click()
+    await this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
+    await this.taskMenu.removeTaskButton.click()
   }
 
   async editTask(listTitle, taskTitle, newTaskTitle) {
-    this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
-    this.taskMenu.editTaskButton.click()
+    await this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
+    await this.taskMenu.editTaskButton.click()
     await this.taskModal.titleInput.fill(newTaskTitle)
     await this.taskModal.updateTaskButton.click()
     await this.taskModal.backdrop.waitFor({ state: 'hidden' })
   }
 
   async moveTask(listTitle, taskTitle, toListTitle) {
-    this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
+    await this.listByTitle(listTitle).taskByTitle(taskTitle).burgerMenuButton.click()
     await this.taskMenu.moveTaskSelect.selectOption(toListTitle)
+  }
+
+  async selectBoard(boardTitle) {
+    await this.boardSelect.selectOption(boardTitle)
   }
 }
