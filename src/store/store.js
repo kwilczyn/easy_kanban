@@ -242,13 +242,13 @@ export const actions = {
   },
 
   updateTask(context, payload) {
-    if (!payload.listTitle || !payload.taskId) {
-      throw new Error('listTitle, taskId, are required')
+    if (!payload.listTitle || !payload.taskId || !payload.listId) {
+      throw new Error('listTitle, taskId, listId are required')
     }
     context.commit('updateTask', payload)
 
     return taskApi
-      .editTask({
+      .patchTask({
         boardId: context.getters.getActiveBoard.id,
         listId: payload.listId,
         taskId: payload.taskId,
