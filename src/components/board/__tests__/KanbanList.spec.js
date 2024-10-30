@@ -14,7 +14,10 @@ import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
 const mockStore = createStore({
   getters: {
     getListTitles: () => ['To Do', 'In Progress', 'Done'],
-    getTaskTitles: () => (listTitle) => ['Task 1', 'Task 2']
+    getTaskTitles: () => (listTitle) => ['Task 1', 'Task 2'],
+    getListByTitle: () => (title) => {
+      if (title === 'In Progress') return { id: 2 }
+    }
   },
   actions: {
     removeTask: vi.fn(),
@@ -36,6 +39,7 @@ describe('KanbanList', () => {
       }
     },
     props: {
+      id: 1,
       title: 'My List',
       tasks: [
         {
@@ -69,6 +73,7 @@ describe('KanbanList', () => {
     vi.spyOn(mockStore, 'dispatch')
     await wrapper.findComponent(KanbanTask).vm.$emit('removeTask', { taskId: 1 })
     expect(mockStore.dispatch).toHaveBeenCalledWith('removeTask', {
+      listId: 1,
       listTitle: 'My List',
       taskId: 1
     })
@@ -88,6 +93,7 @@ describe('KanbanList', () => {
       description: 'This is a new task.'
     })
     expect(mockStore.dispatch).toHaveBeenCalledWith('addTask', {
+      listId: 1,
       listTitle: 'My List',
       taskId: '',
       title: 'New Task',
@@ -108,6 +114,7 @@ describe('KanbanList', () => {
       description: 'This is the edited task.'
     })
     expect(mockStore.dispatch).toHaveBeenCalledWith('updateTask', {
+      listId: 1,
       listTitle: 'My List',
       taskId: 1,
       title: 'Edited Task',
@@ -119,11 +126,11 @@ describe('KanbanList', () => {
     vi.spyOn(mockStore, 'dispatch')
     await wrapper.findComponent(KanbanTask).vm.$emit('moveTask', {
       taskId: 1,
-      to: 'Done'
+      to: 'In Progress'
     })
     expect(mockStore.dispatch).toHaveBeenCalledWith('moveTask', {
-      from: 'My List',
-      to: 'Done',
+      from: 1,
+      to: 2,
       taskId: 1
     })
   })
