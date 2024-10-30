@@ -374,7 +374,7 @@ describe('actions', () => {
 
   it('updateTask', async () => {
     const { updateTask } = actions
-    taskApi.editTask.mockResolvedValueOnce({})
+    taskApi.patchTask.mockResolvedValueOnce({})
     await updateTask(context, {
       listId: 1,
       listTitle: 'To Do',
@@ -389,7 +389,7 @@ describe('actions', () => {
       title: 'Updated Task',
       description: 'This is an updated task.'
     })
-    expect(taskApi.editTask).toHaveBeenCalledWith({
+    expect(taskApi.patchTask).toHaveBeenCalledWith({
       boardId: 1,
       listId: 1,
       taskId: 1,
