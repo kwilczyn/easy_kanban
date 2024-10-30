@@ -54,8 +54,9 @@ export default {
       this.$emit('moveTask', { to: event.target.value, taskId: this.task.id })
     },
     onDrop(event) {
-      const taskId = event.dataTransfer.getData('taskId')
-      this.moveTaskAbove({ taskId: taskId, targetTaskId: this.task.id })
+      const listId = Number(event.dataTransfer.getData('from'))
+      const taskId = Number(event.dataTransfer.getData('taskId'))
+      this.moveTaskAbove({ listId: listId, taskId: taskId, targetTaskId: this.task.id })
       event.stopPropagation()
     }
   }
