@@ -10,6 +10,7 @@
     >
       <kanban-list
         v-for="(list, index) in lists"
+        :id="list.id"
         :key="list.title"
         :title="list.title"
         :tasks="list.tasks"
