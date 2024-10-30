@@ -21,9 +21,9 @@ describe('board', () => {
 
   describe('fetchBoards', () => {
     it('should call apiClient.get with appropriate parameters', () => {
-      const user__id = '123'
-      board.fetchBoards(user__id)
-      expect(apiClient.get).toHaveBeenCalledWith('api/board/', { user__id })
+      const users__id = '123'
+      board.fetchBoards({ users__id })
+      expect(apiClient.get).toHaveBeenCalledWith('api/board/', { params: { users__id: users__id } })
     })
   })
 
