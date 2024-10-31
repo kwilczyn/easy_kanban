@@ -7,7 +7,7 @@ The backend part will be located in a separate repository.
 
 Example animation of task flow: 
 <p align="middle">
-<img src="https://github.com/user-attachments/assets/5bebce08-d22f-4b56-95fb-30454ccca075" width="50%" alt="Task Flow"/>  
+<img src="https://github.com/user-attachments/assets/5bebce08-d22f-4b56-95fb-30454ccca075" alt="Task Flow"/>  
 </p>
 
 Look at the mobile app layout:  
