@@ -5,20 +5,30 @@ A Kanban board is a visual project management tool that helps teams organize and
 
 The backend part will be located in a separate repository.  
 
-Example animation of removing list from the board:  
-<video src="https://github.com/user-attachments/assets/b0168156-8602-4b9f-b32f-436e18d9ba54.mov" height="300" autoplay loop alt="animation of removing lists"></video>
+Example animation of task flow: 
+<p align="middle">
+<img src="https://github.com/user-attachments/assets/5bebce08-d22f-4b56-95fb-30454ccca075" width="50%" alt="Task Flow"/>  
+</p>
 
 Look at the mobile app layout:  
 <p align="middle">
-<img src="./mobile-view.png" width="50%" alt="Mobile view"/>  
+<img src="https://github.com/user-attachments/assets/31c3b90b-d9eb-4b67-a41c-017848e6a6c7" alt="Mobile view"/>  
 </p>
 
-Currently the project is in a very early phase. Implemented features:
+Implemented features:
 
 - the first design look for the desktop and mobile devices
 - the animations for the basic actions like deleting lists from the board
 - dark mode
-- basic CRUD operations on the predefined test data
+- basic CRUD operations including data valiadtion
+- drag & drop operations for tasks
+- changing the order of the lists on the board
+- unit tests (Vitest)
+- E2E Tests (Playwright)
+
+In progress:  
+- Integration with backend (branch: BackendIntegration)
+- User authentication
 
 ## Recommended IDE Setup
 
