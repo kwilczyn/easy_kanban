@@ -8,7 +8,7 @@
           <option v-for="value in getBoardNames" :value="value">{{ value }}</option>
         </select>
       </form>
-      <base-button customType="navigation">Log in</base-button>
+      <base-button customType="navigation">Log out</base-button>
     </nav>
   </header>
 </template>

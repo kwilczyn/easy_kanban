@@ -4,8 +4,13 @@ import boardsApi from '@/api/board.js'
 import listApi from '@/api/list.js'
 import csrfApi from '@/api/csrf.js'
 import taskApi from '@/api/task.js'
+import authApi from '@/api/auth.js'
 
 export const mutations = {
+  setRegistrationSuccessful(state, payload) {
+    state.registrationSuccessful = payload
+  },
+
   setCsrftoken(state, payload) {
     state.csrfToken = payload.csrfToken
   },
@@ -121,6 +126,19 @@ export const getters = {
 }
 
 export const actions = {
+  async registerUser(context, payload) {
+    if (!payload.username || !payload.password || !payload.password_confirm || !payload.email) {
+      throw new Error('username, password, password_confirm, email are required')
+    }
+    try {
+      await authApi.registerUser(payload)
+      context.commit('setRegistrationSuccessful', true)
+    } catch (error) {
+      console.error('Error registering user', error)
+      context.commit('setCommunicationError', error)
+    }
+  },
+
   async fetchCsrfToken(context) {
     try {
       const token = await csrfApi.getCsrfToken()
@@ -136,11 +154,8 @@ export const actions = {
     // mock for testing
     let user = null
     try {
-      console.log('BYŁEM TUTAJ1')
       user = await apiClient.get('api/user/')
       context.state.userId = user.data.id
-      console.log('BYŁEM TUTAJ2')
-      console.log('stan:', context.state.userId)
     } catch (error) {
       console.error('Error fetching user', error)
     }
@@ -346,7 +361,10 @@ export const actions = {
 const store = createStore({
   state() {
     return {
-      userId: 2,
+      userId: 8,
+      token: null,
+      expirationTime: null,
+      registrationSuccessful: null,
       boards: [],
       activeBoard: {}
     }

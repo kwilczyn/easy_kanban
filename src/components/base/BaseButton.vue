@@ -71,4 +71,9 @@ button:focus {
   font-weight: bold;
   font-family: Helvetica, sans-serif;
 }
+
+.selected {
+  font-weight: bold;
+  border-width: 3px;
+}
 </style>

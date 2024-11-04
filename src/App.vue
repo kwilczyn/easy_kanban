@@ -1,5 +1,5 @@
 <template>
-  <the-header></the-header>
+  <the-header v-if="$store.state.token"></the-header>
   <RouterView />
   <base-modal v-if="communicationError" @closeModal="onCloseModal">
     <template #modalTitle>Communication Error</template>

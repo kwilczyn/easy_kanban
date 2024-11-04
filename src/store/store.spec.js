@@ -1,5 +1,6 @@
 import listApi from '@/api/list.js'
 import taskApi from '@/api/task.js'
+import authApi from '@/api/auth.js'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { mutations, getters, actions } from './store'
 
@@ -28,7 +29,16 @@ vi.mock('@/api/list.js', () => {
   }
 })
 
+vi.mock('@/api/auth.js', () => {
+  return {
+    default: {
+      registerUser: vi.fn()
+    }
+  }
+})
+
 const initialState = {
+  registrationSuccessful: null,
   boardNames: ['My Simple Kanban Board'],
   boards: [
     { id: 1, title: 'My Simple Kanban Board', users: [1] },
@@ -88,6 +98,12 @@ describe('mutations', () => {
   afterEach(() => {
     vi.clearAllMocks()
     vi.resetAllMocks()
+  })
+
+  it('setRegistrationSuccessful', () => {
+    const { setRegistrationSuccessful } = mutations
+    setRegistrationSuccessful(state, true)
+    expect(state.registrationSuccessful).toBe(true)
   })
 
   it('setCsrfToken', () => {
@@ -275,6 +291,70 @@ describe('actions', () => {
   afterEach(() => {
     vi.clearAllMocks()
     vi.resetAllMocks()
+  })
+
+  it('registerUser throws error when any required field is missing', async () => {
+    const requiredFields = ['username', 'password', 'password_confirm', 'email']
+    for (const field of requiredFields) {
+      const payload = {
+        username: 'testuser',
+        password: 'password123',
+        password_confirm: 'password123',
+        email: 'test@example.com'
+      }
+      delete payload[field]
+
+      await expect(actions.registerUser(context, payload)).rejects.toThrow(
+        'username, password, password_confirm, email are required'
+      )
+    }
+  })
+
+  it('registerUser throws error when payload is undefined', async () => {
+    await expect(actions.registerUser(context, undefined)).rejects.toThrow()
+  })
+
+  it('registerUser sets registrationSuccessful to true when registration succeds', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123',
+      password_confirm: 'password123',
+      email: 'test@example.com'
+    }
+    authApi.registerUser.mockResolvedValueOnce({})
+    await actions.registerUser(context, payload)
+    expect(context.commit).toHaveBeenCalledWith('setRegistrationSuccessful', true)
+  })
+
+  it('registerUser commits setCommunicationError when registration fails', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123',
+      password_confirm: 'password123',
+      email: 'test@example.com'
+    }
+    const error = new Error('Registration failed')
+    authApi.registerUser.mockRejectedValueOnce(error)
+
+    await actions.registerUser(context, payload)
+
+    expect(context.commit).toHaveBeenCalledWith('setCommunicationError', error)
+    expect(context.commit).not.toHaveBeenCalledWith('setRegistrationSuccessful', true)
+  })
+
+  it('registerUser does not set registrationSuccessful when registration fails', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123',
+      password_confirm: 'password123',
+      email: 'test@example.com'
+    }
+    const error = new Error('Registration failed')
+    authApi.registerUser.mockRejectedValueOnce(error)
+
+    await actions.registerUser(context, payload)
+
+    expect(context.commit).not.toHaveBeenCalledWith('setRegistrationSuccessful', true)
   })
 
   it('addList', async () => {
