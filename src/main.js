@@ -11,7 +11,7 @@ import store from './store/store'
 import ClickOutside from './directives/ClickOutsideDirective.js'
 
 store.dispatch('fetchCsrfToken').then(() => {
-  store.dispatch('fetchBoards').then(() => {
+  store.dispatch('tryToLogin').then(() => {
     const app = createApp(App)
     app
       .component('base-button', BaseButton)

@@ -98,4 +98,19 @@ describe('RegisterUserForm', () => {
     await wrapper.find('form').trigger('submit.prevent')
     expect(wrapper.text()).toContain('Passwords do not match')
   })
+
+  it('submits the form', async () => {
+    const dispatch = vi.spyOn(mockStore, 'dispatch')
+    await wrapper.find('input[name="username"]').setValue('username')
+    await wrapper.find('input[name="email"]').setValue('email@test.email.pl')
+    await wrapper.find('input[name="password"]').setValue('password')
+    await wrapper.find('input[name="confirmPassword"]').setValue('password')
+    await wrapper.find('form').trigger('submit.prevent')
+    expect(dispatch).toHaveBeenCalledWith('registerUser', {
+      username: 'username',
+      email: 'email@test.email.pl',
+      password: 'password',
+      password_confirm: 'password'
+    })
+  })
 })

@@ -5,10 +5,37 @@ import listApi from '@/api/list.js'
 import csrfApi from '@/api/csrf.js'
 import taskApi from '@/api/task.js'
 import authApi from '@/api/auth.js'
+import router from '@/router'
+import actionCanceler from '@/store/plugins/actionCanceler.js'
+import mutationCanceler from '@/store/plugins/mutationCanceler.js'
 
 export const mutations = {
   setRegistrationSuccessful(state, payload) {
     state.registrationSuccessful = payload
+  },
+
+  setToken(state, payload) {
+    localStorage.setItem('token', payload.access)
+    localStorage.setItem('refreshToken', payload.refresh)
+    state.token = payload.access
+    state.refreshToken = payload.refresh
+    apiClient.defaults.headers['Authorization'] = `Bearer ${state.token}`
+  },
+
+  removeToken(state) {
+    state.token = null
+    state.refreshToken = null
+    localStorage.removeItem('token')
+    localStorage.removeItem('refreshToken')
+    delete apiClient.defaults.headers['Authorization']
+  },
+
+  setLoginError(state, payload) {
+    state.loginError = payload
+  },
+
+  resetLoginError(state) {
+    state.loginError = false
   },
 
   setCsrftoken(state, payload) {
@@ -135,7 +162,44 @@ export const actions = {
       context.commit('setRegistrationSuccessful', true)
     } catch (error) {
       console.error('Error registering user', error)
-      context.commit('setCommunicationError', error)
+    }
+  },
+
+  async tryToLogin(context) {
+    const token = localStorage.getItem('token')
+    const refreshToken = localStorage.getItem('refreshToken')
+    if (token) {
+      context.commit('setToken', { access: token, refresh: refreshToken })
+      await context.dispatch('fetchBoards')
+      if (context.state.boards.length > 0) {
+        await context.dispatch('fetchBoard', { boardId: context.state.boards[0].id })
+      }
+    }
+  },
+
+  logoutUser(context) {
+    context.commit('removeToken')
+    context.commit('setBoards', [])
+    context.commit('setActiveBoard', {})
+    router.push({ name: 'auth' })
+  },
+
+  async loginUser(context, payload) {
+    if (!payload.username || !payload.password) {
+      throw new Error('username, password are required')
+    }
+    try {
+      const response = await authApi.loginUser(payload)
+      context.commit('setToken', response.data)
+      context.dispatch('fetchBoards')
+      router.push({ name: 'home' })
+      context.commit('setLoginError', false)
+    } catch (error) {
+      if (error.response && error.response.status === 401) {
+        context.commit('setLoginError', error.response.data.detail)
+      } else {
+        console.error('Error logging in user', error)
+      }
     }
   },
 
@@ -146,27 +210,15 @@ export const actions = {
       apiClient.defaults.headers['X-CSRFToken'] = context.state.csrfToken
     } catch (error) {
       console.error('Error fetching CSRF token', error)
-      context.commit('setCommunicationError', error)
     }
   },
 
   async fetchBoards(context) {
-    // mock for testing
-    let user = null
     try {
-      user = await apiClient.get('api/user/')
-      context.state.userId = user.data.id
-    } catch (error) {
-      console.error('Error fetching user', error)
-    }
-    /////////////////////
-
-    try {
-      const boards = await boardsApi.fetchBoards({ users__id: context.state.userId })
+      const boards = await boardsApi.fetchBoards()
       context.commit('setBoards', boards.data)
     } catch (error) {
       console.error('Error fetching boards', error)
-      context.commit('setCommunicationError', error)
     }
   },
 
@@ -176,7 +228,6 @@ export const actions = {
       context.commit('setActiveBoard', board.data)
     } catch (error) {
       console.error('Error fetching board', error)
-      context.commit('setCommunicationError', error)
     }
   },
 
@@ -196,7 +247,6 @@ export const actions = {
       })
       .catch((error) => {
         console.error('Error adding list', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -209,7 +259,6 @@ export const actions = {
       .deleteList({ boardId: context.getters.getActiveBoard.id, listId: payload.id })
       .catch((error) => {
         console.error('Error removing list', error.message)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -227,7 +276,6 @@ export const actions = {
       })
       .catch((error) => {
         console.error('Error removing task', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -252,7 +300,6 @@ export const actions = {
       })
       .catch((error) => {
         console.error('Error adding task', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -271,7 +318,6 @@ export const actions = {
       })
       .catch((error) => {
         console.error('Error updating task', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -292,7 +338,6 @@ export const actions = {
       })
       .catch((error) => {
         console.error('Error moving task', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -315,7 +360,6 @@ export const actions = {
       .patchTask({ boardId: context.getters.getActiveBoard.id, listId, taskId, taskData })
       .catch((error) => {
         console.error('Error moving task above', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -331,7 +375,6 @@ export const actions = {
       .moveListBackward({ boardId: context.getters.getActiveBoard.id, listId: payload.id })
       .catch((error) => {
         console.error('Error moving list backward', error)
-        context.commit('setCommunicationError', error)
       })
   },
   moveListForward(context, payload) {
@@ -349,7 +392,6 @@ export const actions = {
       .moveListForward({ boardId: context.getters.getActiveBoard.id, listId: payload.id })
       .catch((error) => {
         console.error('Error moving list forward', error)
-        context.commit('setCommunicationError', error)
       })
   },
 
@@ -361,17 +403,18 @@ export const actions = {
 const store = createStore({
   state() {
     return {
-      userId: 8,
       token: null,
-      expirationTime: null,
+      refreshToken: null,
       registrationSuccessful: null,
+      loginError: false,
       boards: [],
       activeBoard: {}
     }
   },
   getters,
   mutations,
-  actions
+  actions,
+  plugins: [actionCanceler, mutationCanceler]
 })
 
 export default store

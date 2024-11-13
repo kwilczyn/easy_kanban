@@ -33,6 +33,11 @@ export default {
       location.reload()
       this.resetCommunicationError()
     }
+  },
+  created() {
+    if (!this.$store.state.token) {
+      this.$router.push({ name: 'auth' })
+    }
   }
 }
 </script>

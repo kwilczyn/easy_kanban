@@ -19,7 +19,7 @@
         :last="index === lists.length - 1"
       />
     </transition-group>
-    <div id="add-list-button-container">
+    <div id="add-list-button-container" v-if="getActiveBoard">
       <base-button customType="add" class="oval" @click="openAddListModal">+</base-button>
       <base-modal v-if="isAddListModalOpen" open @closeModal="isAddListModalOpen = false">
         <template #modalTitle>Add List</template>
@@ -32,7 +32,7 @@
 <script>
 import KanbanList from '@/components/board/KanbanList.vue'
 import AddListForm from '@/components/forms/AddListForm.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -51,6 +51,9 @@ export default {
       animationSpeed: 500,
       isAddListModalOpen: false
     }
+  },
+  computed: {
+    ...mapGetters(['getActiveBoard'])
   },
   methods: {
     ...mapActions(['removeList', 'addList']),

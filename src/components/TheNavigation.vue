@@ -2,47 +2,57 @@
   <header>
     <nav>
       <div class="logo">Easy Kanban</div>
-      <form class="nav-form">
+      <form v-show="selectedBoard" class="nav-form">
         <label for="selectBoard">Select a board:</label>
         <select id="selectBoard" v-model="selectedBoard" name="selectBoard">
           <option v-for="value in getBoardNames" :value="value">{{ value }}</option>
         </select>
       </form>
-      <base-button customType="navigation">Log out</base-button>
+      <base-button customType="navigation" @click="logoutUser">Log out</base-button>
     </nav>
   </header>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex'
 
 export default {
   name: 'TheNavigation',
   computed: {
-    ...mapGetters(['getBoardNames'])
+    ...mapGetters(['getBoardNames']),
+    ...mapState(['boards'])
   },
   data() {
     return {
       selectedBoard: ''
     }
   },
-  created() {
-    if (this.getBoardNames.length > 0) {
-      this.selectedBoard = this.getBoardNames[0]
-    }
+  methods: {
+    ...mapActions(['logoutUser'])
   },
   watch: {
     selectedBoard(newValue, oldValue) {
       if (newValue !== oldValue) {
+        if (this.$store.state.boards.length === 0) {
+          return
+        }
         const bid = this.$store.state.boards.filter((board) => board.title === newValue)[0].id
         this.$store.dispatch('fetchBoard', { boardId: bid })
       }
+    }
+  },
+  beforeMount() {
+    this.selectedBoard = this.getBoardNames[0]
+  },
+  beforeUpdate() {
+    if (!this.selectedBoard) {
+      this.selectedBoard = this.getBoardNames[0]
     }
   }
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 $mobile-device-size: 78rem;
 
 nav {

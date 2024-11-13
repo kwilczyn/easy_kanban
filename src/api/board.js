@@ -2,12 +2,9 @@ import apiClient from '@/api/apiClient.js'
 import { validateParams } from '@/api/apiClient.js'
 
 export default {
-  fetchBoards({ users__id }) {
-    validateParams({ users__id })
+  fetchBoards() {
     return apiClient.get('api/board/', {
-      params: {
-        users__id: users__id
-      }
+      params: {}
     })
   },
 

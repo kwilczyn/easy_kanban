@@ -26,21 +26,26 @@
       <register-user-form v-if="!registrationSuccessful"></register-user-form>
       <p v-else id="registration-successful-info">Registration successful! Please log in.</p>
     </div>
+    <div class="login">
+      <login-form v-if="mode === 'log-in'"></login-form>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 import RegisterUserForm from '@/components/forms/RegisterUserForm.vue'
+import LoginForm from '@/components/forms/LoginForm.vue'
 
 export default {
   name: 'LoginView',
   components: {
-    RegisterUserForm
+    RegisterUserForm,
+    LoginForm
   },
   data() {
     return {
-      mode: 'sign-in'
+      mode: 'log-in'
     }
   },
   computed: {

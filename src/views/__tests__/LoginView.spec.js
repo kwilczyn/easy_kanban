@@ -4,6 +4,7 @@ import BaseFormRow from '@/components/base/BaseFormRow.vue'
 import LoginView from '@/views/LoginView.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import RegisterUserForm from '@/components/forms/RegisterUserForm.vue'
+import LoginForm from '@/components/forms/LoginForm.vue'
 import { createStore } from 'vuex'
 import { getters, mutations } from '@/store/store'
 
@@ -32,9 +33,9 @@ describe('LoginView', () => {
     })
   })
 
-  it('renders correctly with default mode "sign-in"', () => {
+  it('renders correctly with default mode "log-in"', () => {
     expect(wrapper.find('h1').text()).toBe('Welcome to Easy Kanban App!')
-    expect(wrapper.findComponent(RegisterUserForm).exists()).toBe(true)
+    expect(wrapper.findComponent(LoginForm).exists()).toBe(true)
     expect(wrapper.find('p').text()).toContain('Easy Kanban is a simple Kanban board application')
   })
 
@@ -54,9 +55,9 @@ describe('LoginView', () => {
   })
 
   it('displays registration success message when registrationSuccessful is true', async () => {
-    // Update the store state
     mockStore.state.registrationSuccessful = true
     await wrapper.vm.$nextTick()
+    await wrapper.find('#sign-in-selection-button').trigger('click')
     expect(wrapper.find('#registration-successful-info').text()).toContain(
       'Registration successful! Please log in.'
     )
@@ -77,11 +78,11 @@ describe('LoginView', () => {
   })
 
   it('applies the "selected" class to the active mode button', async () => {
-    // Default mode is "sign-in"
-    expect(wrapper.find('#sign-in-selection-button').classes()).toContain('selected')
-    // Switch to "log-in" mode
-    await wrapper.find('#log-in-selection-button').trigger('click')
+    // Default mode is "log-in"
     expect(wrapper.find('#log-in-selection-button').classes()).toContain('selected')
-    expect(wrapper.find('#sign-in-selection-button').classes()).not.toContain('selected')
+    // Switch to "log-in" mode
+    await wrapper.find('#sign-in-selection-button').trigger('click')
+    expect(wrapper.find('#sign-in-selection-button').classes()).toContain('selected')
+    expect(wrapper.find('#log-in-selection-button').classes()).not.toContain('selected')
   })
 })

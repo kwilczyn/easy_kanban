@@ -326,22 +326,6 @@ describe('actions', () => {
     expect(context.commit).toHaveBeenCalledWith('setRegistrationSuccessful', true)
   })
 
-  it('registerUser commits setCommunicationError when registration fails', async () => {
-    const payload = {
-      username: 'testuser',
-      password: 'password123',
-      password_confirm: 'password123',
-      email: 'test@example.com'
-    }
-    const error = new Error('Registration failed')
-    authApi.registerUser.mockRejectedValueOnce(error)
-
-    await actions.registerUser(context, payload)
-
-    expect(context.commit).toHaveBeenCalledWith('setCommunicationError', error)
-    expect(context.commit).not.toHaveBeenCalledWith('setRegistrationSuccessful', true)
-  })
-
   it('registerUser does not set registrationSuccessful when registration fails', async () => {
     const payload = {
       username: 'testuser',
@@ -366,14 +350,6 @@ describe('actions', () => {
     expect(context.commit).toHaveBeenCalledWith('mountListData', { id: 10, title: 'New List' })
   })
 
-  it('addList sets communication error', async () => {
-    const { addList } = actions
-    listApi.createList.mockRejectedValueOnce(new Error('Error adding list'))
-    await addList(context, { title: 'My New List' })
-    expect(context.commit).toHaveBeenCalledWith('addList', { title: 'My New List' })
-    expect(context.commit).toHaveBeenCalledWith('setCommunicationError', expect.any(Error))
-  })
-
   it('does not add list if title is missing', () => {
     const { addList } = actions
     expect(() => addList(context, {})).toThrow()
@@ -385,13 +361,6 @@ describe('actions', () => {
     await removeList(context, { id: 4, title: 'In Progress' })
     expect(context.commit).toHaveBeenCalledWith('removeList', { id: 4, title: 'In Progress' })
     expect(listApi.deleteList).toHaveBeenCalledWith({ boardId: 1, listId: 4 })
-  })
-
-  it('removeList sets communication error', async () => {
-    const { removeList } = actions
-    listApi.deleteList.mockRejectedValueOnce(new Error('Error removing list'))
-    await removeList(context, { id: 4, title: 'In Progress' })
-    expect(context.commit).toHaveBeenCalledWith('setCommunicationError', expect.any(Error))
   })
 
   it('does not remove list if title is missing', () => {
@@ -409,13 +378,6 @@ describe('actions', () => {
       taskId: 1
     })
     expect(taskApi.deleteTask).toHaveBeenCalledWith({ boardId: 1, listId: 1, taskId: 1 })
-  })
-
-  it('removeTask sets communication error', async () => {
-    const { removeTask } = actions
-    taskApi.deleteTask.mockRejectedValueOnce(new Error('Error removing task'))
-    await removeTask(context, { listId: 1, listTitle: 'To Do', taskId: 1 })
-    expect(context.commit).toHaveBeenCalledWith('setCommunicationError', expect.any(Error))
   })
 
   it('does not remove task if listTitle is missing', () => {
