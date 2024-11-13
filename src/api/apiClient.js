@@ -13,7 +13,7 @@ apiClient.interceptors.response.use(
   },
   async (error) => {
     const originalRequest = error.config
-    if (originalRequest.url == '/api/token') {
+    if (originalRequest.url == '/api/token/') {
       return Promise.reject(error)
     }
 
