@@ -50,21 +50,24 @@ export default defineConfig({
     {
       name: 'chromium',
       use: {
-        testUser: 2,
+        testUser: 'test',
+        testUserId: 2,
         ...devices['Desktop Chrome']
       }
     },
     {
       name: 'firefox',
       use: {
-        testUser: 3,
+        testUser: 'test2',
+        testUserId: 3,
         ...devices['Desktop Firefox']
       }
     },
     {
       name: 'webkit',
       use: {
-        testUser: 4,
+        testUser: 'test3',
+        testUserId: 4,
         ...devices['Desktop Safari']
       }
     }

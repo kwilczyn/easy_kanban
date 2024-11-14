@@ -1,17 +1,24 @@
-import { test, expect } from '@playwright/test'
-import HomePage from '../pages/HomePage.js'
-import clientApi from '@/api/apiClient.js'
-import apiClient from '@/api/apiClient.js'
-import csrf from '@/api/csrf.js'
+import process from 'node:process'
+import dotenv from 'dotenv'
+dotenv.config()
 
+import { test, expect } from '@playwright/test'
+
+import auth from '@/api/auth.js'
+import csrf from '@/api/csrf.js'
+import apiClient from '@/api/apiClient.js'
+import HomePage from './../pages/HomePage.js'
+
+const projectTokens = {}
 let homePage
 
-test.beforeAll(async () => {
+test.beforeAll(async ({}, workerParams) => {
   // Create test data using API
+  const testUserId = workerParams.project.use.testUserId
   const testData = {
     boards: [
       {
-        users: [test.info().project.use.testUser],
+        users: [testUserId],
         lists: [
           {
             title: 'Removing Tasks',
@@ -51,7 +58,7 @@ test.beforeAll(async () => {
         title: 'My Example Board'
       },
       {
-        users: [2],
+        users: [testUserId],
         lists: [
           { title: 'First List', tasks: [], position: 0 },
           { title: 'List To Move Left', tasks: [], position: 1 },
@@ -62,7 +69,7 @@ test.beforeAll(async () => {
         title: 'Test Moving Lists'
       },
       {
-        users: [2],
+        users: [testUserId],
         lists: [
           {
             title: 'First List',
@@ -117,17 +124,30 @@ test.beforeAll(async () => {
   // todo: temporary hardcoded url
   apiClient.defaults.baseURL = 'http://localhost:8000/'
   apiClient.defaults.headers['X-CSRFToken'] = await csrf.getCsrfToken()
-  await clientApi.post('api/create_test_data/', testData)
+
+  await apiClient.post('api/create_test_data/', testData)
+
+  const authResponse = await auth.loginUser({
+    username: workerParams.project.use.testUser,
+    password: process.env.TEST_USER_PASSWORD
+  })
+  const jwtToken = authResponse.data.access
+  const refreshToken = authResponse.data.refresh
+  projectTokens[workerParams.project.name] = { jwtToken, refreshToken }
 })
 
-test.beforeEach(async ({ page }) => {
-  // Mock the user API response
-  await page.route('*/**/api/user/', async (route) => {
-    const json = { id: test.info().project.use.testUser }
-    await route.fulfill({ json })
-  })
+test.beforeEach(async ({ page }, workerParams) => {
+  const { jwtToken, refreshToken } = projectTokens[workerParams.project.name]
   homePage = new HomePage(page)
   await homePage.navigate()
+  await page.evaluate(
+    (payload) => {
+      localStorage.setItem('token', payload.jwtToken)
+      localStorage.setItem('refreshToken', payload.refreshToken)
+    },
+    { jwtToken, refreshToken }
+  )
+  await page.reload()
 })
 
 test('add a new list', async ({ page }) => {
