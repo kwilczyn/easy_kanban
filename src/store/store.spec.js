@@ -1,8 +1,10 @@
+import apiClient from '@/api/apiClient.js'
 import listApi from '@/api/list.js'
 import taskApi from '@/api/task.js'
 import authApi from '@/api/auth.js'
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { mutations, getters, actions } from './store'
+import store from './store.js'
 
 // mock API client
 vi.mock('@/api/task.js', () => {
@@ -567,5 +569,79 @@ describe('actions', () => {
     const { moveListForward } = actions
     moveListForward(context, { id: 3, listTitle: 'Done' })
     expect(context.commit).not.toHaveBeenCalled()
+  })
+})
+
+describe('apiClient response interceptor', () => {
+  it('should have a response interceptor', () => {
+    expect(apiClient.interceptors.response.handlers.length).toBe(1)
+  })
+
+  it('should retry the request with a refreshed token on 401 error', async () => {
+    const originalRequest = { url: '/api/test/', method: 'get', headers: {} }
+    const error = {
+      config: originalRequest,
+      response: { status: 401 }
+    }
+    localStorage.setItem('refreshToken', 'testRefreshToken')
+    const refreshTokenPost = vi
+      .spyOn(apiClient, 'post')
+      .mockResolvedValue({ data: { access: 'refreshedAccessToken' } })
+    const retriedRequest = vi.spyOn(apiClient, 'request').mockResolvedValue({ data: 'testData' })
+
+    await apiClient.interceptors.response.handlers[0].rejected(error)
+    expect(refreshTokenPost).toHaveBeenCalledWith('/api/token/refresh/', {
+      refresh: 'testRefreshToken'
+    })
+    expect(retriedRequest).toHaveBeenCalledWith({
+      ...originalRequest,
+      headers: { Authorization: 'Bearer refreshedAccessToken' }
+    })
+  })
+
+  it('should log out the user on 401 error if the refresh token is not available', async () => {
+    const originalRequest = { url: '/api/test/', method: 'get', headers: {} }
+    const error = {
+      config: originalRequest,
+      response: { status: 401 }
+    }
+    localStorage.removeItem('refreshToken')
+    const logoutUser = vi.spyOn(store, 'dispatch')
+    await apiClient.interceptors.response.handlers[0].rejected(error)
+    expect(logoutUser).toHaveBeenCalledWith('logoutUser')
+  })
+
+  it('should log out the user on 401 error if the refresh token is expired', async () => {
+    const originalRequest = { url: '/api/test/', method: 'get', headers: {} }
+    const error = {
+      config: originalRequest,
+      response: { status: 401 }
+    }
+    localStorage.setItem('refreshToken', 'testRefreshToken')
+    const refreshTokenPost = vi
+      .spyOn(apiClient, 'post')
+      .mockRejectedValue({ response: { data: 'testError' } })
+    const logoutUser = vi.spyOn(store, 'dispatch')
+    await apiClient.interceptors.response.handlers[0].rejected(error)
+    expect(refreshTokenPost).toHaveBeenCalledWith('/api/token/refresh/', {
+      refresh: 'testRefreshToken'
+    })
+    expect(logoutUser).toHaveBeenCalledWith('logoutUser')
+  })
+
+  it('should not retry refresh token request on 401 error', async () => {
+    const originalRequest = { url: '/api/token/refresh/', method: 'post', headers: {} }
+    const error = {
+      config: originalRequest,
+      response: { status: 401 }
+    }
+    const refreshTokenPost = vi
+      .spyOn(apiClient, 'post')
+      .mockResolvedValue({ data: { access: 'refreshedAccessToken' } })
+    const retriedRequest = vi.spyOn(apiClient, 'request').mockResolvedValue({ data: 'testData' })
+
+    await apiClient.interceptors.response.handlers[0].rejected(error)
+    expect(refreshTokenPost).not.toHaveBeenCalled()
+    expect(retriedRequest).not.toHaveBeenCalled()
   })
 })
