@@ -2,9 +2,14 @@
   <header>
     <nav>
       <div class="logo">Easy Kanban</div>
-      <form v-show="selectedBoard" class="nav-form">
+      <form class="nav-form">
         <label for="selectBoard">Select a board:</label>
-        <select id="selectBoard" v-model="selectedBoard" name="selectBoard">
+        <select
+          id="selectBoard"
+          v-model="selectedBoard"
+          name="selectBoard"
+          :class="{ loading: !selectedBoard }"
+        >
           <option v-for="value in getBoardNames" :value="value">{{ value }}</option>
         </select>
       </form>
@@ -70,6 +75,10 @@ nav {
   gap: 1rem;
   white-space: nowrap;
   flex-wrap: wrap;
+}
+
+#selectBoard {
+  min-width: 8.5rem;
 }
 
 @media (max-width: $mobile-device-size) {
