@@ -108,3 +108,51 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.loading {
+  position: relative;
+  background: linear-gradient(to right, gray 0%, transparent 100%);
+  background-size: 200% 100%;
+  animation: slideGray 0.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 60%;
+  aspect-ratio: 1;
+  transition: none;
+  border: 5px solid rgba(0, 0, 0, 0.1);
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: translate(-50%, -50%);
+  }
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+.loading button {
+  visibility: hidden;
+  cursor: nota-allowed !important;
+}
+
+@keyframes slideGray {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
