@@ -1,5 +1,11 @@
 <template>
-  <div class="kanban-task" @drop="onDrop" @dragover.prevent @dragenter.prevent>
+  <div
+    class="kanban-task"
+    @drop="onDrop"
+    @dragover.prevent
+    @dragenter.prevent
+    :class="{ loading: !task.id }"
+  >
     <header class="kanban-task__header">
       <h3>{{ task.title }}</h3>
       <base-button customType="burger" @click.stop="toggleDropdown"></base-button>
