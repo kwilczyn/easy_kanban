@@ -1,5 +1,11 @@
 <template>
-  <section class="kanban-list" @drop="onDrop" @dragover.prevent @dragenter.prevent>
+  <section
+    class="kanban-list"
+    @drop="onDrop"
+    @dragover.prevent
+    @dragenter.prevent
+    :class="{ loading: !id }"
+  >
     <header>
       <h2>{{ title }}</h2>
       <base-button customType="delete" @click="removeList">X</base-button>
