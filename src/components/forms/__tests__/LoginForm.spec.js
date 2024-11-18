@@ -5,18 +5,23 @@ import BaseFormRow from '@/components/base/BaseFormRow.vue'
 import BaseFormLabel from '@/components/base/BaseFormLabel.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
 import { createStore } from 'vuex'
+import { mutations } from '@/store/store'
 import { mount } from '@vue/test-utils'
 
 const mockStore = createStore({
   state: {
-    loginError: ''
-  }
+    loginError: '',
+    waitingForLogin: false
+  },
+  mutations: mutations
 })
 
 describe('LoginForm.vue', () => {
   let wrapper
 
   beforeEach(() => {
+    mockStore.state.loginError = ''
+    mockStore.state.waitingForLogin = false
     wrapper = mount(LoginForm, {
       global: {
         components: { BaseFormRow, BaseFormLabel, BaseButton },
@@ -93,5 +98,19 @@ describe('LoginForm.vue', () => {
       username: 'username',
       password: 'password'
     })
+  })
+
+  it('add loading class to the submit button when loading', async () => {
+    mockStore.commit('setWaitingForLogin', true)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button').classes()).toContain('loading')
+  })
+
+  it('removes loading class from the submit button when not loading', async () => {
+    mockStore.commit('setWaitingForLogin', true)
+    await wrapper.vm.$nextTick()
+    mockStore.commit('setWaitingForLogin', false)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button').classes()).not.toContain('loading')
   })
 })

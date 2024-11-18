@@ -5,6 +5,7 @@ import RegisterUserForm from '@/components/forms/RegisterUserForm.vue'
 import BaseFormRow from '@/components/base/BaseFormRow.vue'
 import BaseFormLabel from '@/components/base/BaseFormLabel.vue'
 import BaseButton from '@/components/base/BaseButton.vue'
+import { mutations } from '@/store/store'
 import { createStore } from 'vuex'
 
 const mockStore = createStore({
@@ -13,6 +14,10 @@ const mockStore = createStore({
   },
   actions: {
     registerUser: vi.fn()
+  },
+  mutations: mutations,
+  state: {
+    waitingForRegistration: false
   }
 })
 
@@ -112,5 +117,19 @@ describe('RegisterUserForm', () => {
       password: 'password',
       password_confirm: 'password'
     })
+  })
+
+  it('add loading class to the submit button when loading', async () => {
+    mockStore.commit('setWaitingForRegistration', true)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button[type="submit"]').classes()).toContain('loading')
+  })
+
+  it('removes loading class from the submit button when not loading', async () => {
+    mockStore.commit('setWaitingForRegistration', false)
+    await wrapper.vm.$nextTick()
+    mockStore.commit('setWaitingForRegistration', false)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('button[type="submit"]').classes()).not.toContain('loading')
   })
 })

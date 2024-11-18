@@ -12,13 +12,15 @@ import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
 
 import { createStore } from 'vuex'
 import { getters } from '@/store/store'
+import { mutations } from '@/store/store'
 
 const mockStore = createStore({
   getters: getters,
   actions: {
     moveTaskAbove: vi.fn(),
     moveTask: vi.fn()
-  }
+  },
+  mutations: mutations
 })
 
 describe('KanbanBoard', () => {
@@ -31,6 +33,7 @@ describe('KanbanBoard', () => {
 
   beforeEach(() => {
     data = {}
+    mockStore.commit('setLoadingBoard', false)
     wrapper = mount(KanbanBoard, {
       global: {
         components: { KanbanList, BaseButton, BaseDropdown, BaseModal, TaskForm },
@@ -103,5 +106,27 @@ describe('KanbanBoard', () => {
       to: 3,
       taskId: 1
     })
+  })
+
+  it('adds loading class to the board when the data are not ready', async () => {
+    mockStore.commit('setLoadingBoard', true)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.classes()).toContain('loading')
+  })
+
+  it('adds loading class to the board when the initial list is empty', async () => {
+    wrapper = mount(KanbanBoard, {
+      global: {
+        components: { KanbanList, BaseButton, BaseDropdown, BaseModal, TaskForm },
+        plugins: [mockStore],
+        directives: {
+          'click-outside': ClickOutsideDirective
+        }
+      },
+      props: {
+        lists: null
+      }
+    })
+    expect(wrapper.classes()).toContain('loading')
   })
 })

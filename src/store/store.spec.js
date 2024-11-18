@@ -34,7 +34,8 @@ vi.mock('@/api/list.js', () => {
 vi.mock('@/api/auth.js', () => {
   return {
     default: {
-      registerUser: vi.fn()
+      registerUser: vi.fn(),
+      loginUser: vi.fn()
     }
   }
 })
@@ -222,6 +223,24 @@ describe('mutations', () => {
     setCommunicationError(state, new Error('Communication error'))
     expect(state.communicationError.message).toBe('Communication error')
   })
+
+  it('setLoadingBoar', () => {
+    const { setLoadingBoard } = mutations
+    setLoadingBoard(state, true)
+    expect(state.loadingBoard).toBe(true)
+  })
+
+  it('setWaitingForRegistration', () => {
+    const { setWaitingForRegistration } = mutations
+    setWaitingForRegistration(state, true)
+    expect(state.waitingForRegistration).toBe(true)
+  })
+
+  it('setWaitingForLogin', () => {
+    const { setWaitingForLogin } = mutations
+    setWaitingForLogin(state, true)
+    expect(state.waitingForLogin).toBe(true)
+  })
 })
 
 describe('getters', () => {
@@ -325,7 +344,9 @@ describe('actions', () => {
     }
     authApi.registerUser.mockResolvedValueOnce({})
     await actions.registerUser(context, payload)
+    expect(context.commit).toHaveBeenCalledWith('setWaitingForRegistration', true)
     expect(context.commit).toHaveBeenCalledWith('setRegistrationSuccessful', true)
+    expect(context.commit).toHaveBeenCalledWith('setWaitingForRegistration', false)
   })
 
   it('registerUser does not set registrationSuccessful when registration fails', async () => {
@@ -341,6 +362,76 @@ describe('actions', () => {
     await actions.registerUser(context, payload)
 
     expect(context.commit).not.toHaveBeenCalledWith('setRegistrationSuccessful', true)
+    expect(context.commit).toHaveBeenCalledWith('setWaitingForRegistration', false)
+  })
+
+  it('loginUser throws error when any required field is missing', async () => {
+    const requiredFields = ['username', 'password']
+    for (const field of requiredFields) {
+      const payload = {
+        username: 'testuser',
+        password: 'password123'
+      }
+      delete payload[field]
+
+      await expect(actions.loginUser(context, payload)).rejects.toThrow(
+        'username, password are required'
+      )
+    }
+  })
+
+  it('loginUser throws error when payload is undefined', async () => {
+    await expect(actions.loginUser(context, undefined)).rejects.toThrow()
+  })
+
+  it('loginUser sets waitingForLogin to true before sending api request', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123'
+    }
+    authApi.loginUser.mockResolvedValueOnce({})
+    await actions.loginUser(context, payload)
+    expect(context.commit.mock.calls[0]).toEqual(['setWaitingForLogin', true])
+    expect(context.commit.mock.calls.slice(-1)[0]).toEqual(['setWaitingForLogin', false])
+  })
+
+  it('loginUser sets waitingForLogin to false when login fails', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123'
+    }
+    const error = new Error('Login failed')
+    authApi.loginUser.mockRejectedValueOnce(error)
+    await actions.loginUser(context, payload)
+    expect(context.commit.mock.calls.slice(-1)[0]).toEqual(['setWaitingForLogin', false])
+  })
+
+  it('loginUser sets loginError when login fails with response code 401', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123'
+    }
+    const error = new Error('Login failed')
+    error.response = { status: 401, data: { detail: 'Unauthorized' } }
+    authApi.loginUser.mockRejectedValueOnce(error)
+    await actions.loginUser(context, payload)
+    expect(context.commit).toHaveBeenCalledWith('setLoginError', 'Unauthorized')
+  })
+
+  describe('fetchBoard', () => {
+    it('sets loadingBoard to true before sending api request', async () => {
+      listApi.fetchLists.mockResolvedValueOnce({})
+      await actions.fetchBoard(context, { boardId: 1 })
+      expect(context.commit.mock.calls[0]).toEqual(['setLoadingBoard', true])
+      expect(context.commit.mock.calls.slice(-1)[0]).toEqual(['setLoadingBoard', false])
+    })
+
+    it('sets loadingBoard to false when fetch fails', async () => {
+      const error = new Error('Fetch failed')
+      listApi.fetchLists.mockRejectedValueOnce(error)
+      await actions.fetchBoard(context, { boardId: 1 })
+      expect(context.commit.mock.calls.slice(-1)[0]).toEqual(['setLoadingBoard', false])
+    })
   })
 
   it('addList', async () => {

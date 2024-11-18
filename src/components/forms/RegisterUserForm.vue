@@ -29,12 +29,14 @@
       name="confirmPassword"
       v-model.lazy.trim="password_confirm"
     />
-    <base-button customType="add" type="submit">Register</base-button>
+    <base-button customType="add" type="submit" :class="{ loading: waitingForRegistration }"
+      >Register</base-button
+    >
   </form>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 export default {
   name: 'RegisterUserForm',
   data() {
@@ -48,6 +50,9 @@ export default {
       password_confirm: '',
       confirmPasswordInvalid: ''
     }
+  },
+  computed: {
+    ...mapState(['waitingForRegistration'])
   },
   methods: {
     ...mapActions(['registerUser']),

@@ -1,5 +1,5 @@
 <template>
-  <div id="board">
+  <div id="board" :class="{ loading: loading }">
     <transition-group
       mode="out-in"
       name="user-list"
@@ -53,7 +53,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getActiveBoard'])
+    ...mapGetters(['getActiveBoard']),
+    loading() {
+      return !this.lists || this.$store.state.loadingBoard
+    }
   },
   methods: {
     ...mapActions(['removeList', 'addList']),

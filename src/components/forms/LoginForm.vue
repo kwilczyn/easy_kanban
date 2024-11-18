@@ -16,7 +16,9 @@
       v-model.lazy.trim="password"
     />
     <p class="error_text" v-if="loginError">{{ loginError }}</p>
-    <base-button customType="add" type="submit">Log In</base-button>
+    <base-button customType="add" type="submit" :class="{ loading: waitingForData }"
+      >Log In</base-button
+    >
   </form>
 </template>
 
@@ -34,7 +36,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['loginError'])
+    ...mapState(['loginError']),
+    waitingForData() {
+      return this.$store.state.waitingForLogin
+    }
   },
   methods: {
     ...mapActions(['loginUser']),

@@ -123,6 +123,15 @@ export const mutations = {
   },
   setCommunicationError(state, payload) {
     state.communicationError = payload
+  },
+  setLoadingBoard(state, payload) {
+    state.loadingBoard = payload
+  },
+  setWaitingForRegistration(state, payload) {
+    state.waitingForRegistration = payload
+  },
+  setWaitingForLogin(state, payload) {
+    state.waitingForLogin = payload
   }
 }
 
@@ -158,9 +167,12 @@ export const actions = {
       throw new Error('username, password, password_confirm, email are required')
     }
     try {
+      context.commit('setWaitingForRegistration', true)
       await authApi.registerUser(payload)
       context.commit('setRegistrationSuccessful', true)
+      context.commit('setWaitingForRegistration', false)
     } catch (error) {
+      context.commit('setWaitingForRegistration', false)
       console.error('Error registering user', error)
     }
   },
@@ -189,12 +201,15 @@ export const actions = {
       throw new Error('username, password are required')
     }
     try {
+      context.commit('setWaitingForLogin', true)
       const response = await authApi.loginUser(payload)
       context.commit('setToken', response.data)
       context.dispatch('fetchBoards')
       router.push({ name: 'home' })
       context.commit('setLoginError', false)
+      context.commit('setWaitingForLogin', false)
     } catch (error) {
+      context.commit('setWaitingForLogin', false)
       if (error.response && error.response.status === 401) {
         context.commit('setLoginError', error.response.data.detail)
       } else {
@@ -223,11 +238,14 @@ export const actions = {
   },
 
   async fetchBoard(context, { boardId }) {
+    context.commit('setLoadingBoard', true)
     try {
       const board = await boardsApi.fetchBoard({ boardId })
       context.commit('setActiveBoard', board.data)
+      context.commit('setLoadingBoard', false)
     } catch (error) {
       console.error('Error fetching board', error)
+      context.commit('setLoadingBoard', false)
     }
   },
 
@@ -403,12 +421,16 @@ export const actions = {
 const store = createStore({
   state() {
     return {
+      csrfToken: null,
       token: null,
       refreshToken: null,
       registrationSuccessful: null,
       loginError: false,
       boards: [],
-      activeBoard: {}
+      activeBoard: {},
+      loadingBoard: false,
+      waitingForRegistration: false,
+      waitingForLogin: false
     }
   },
   getters,
