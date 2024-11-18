@@ -113,4 +113,10 @@ describe('LoginForm.vue', () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.find('button').classes()).not.toContain('loading')
   })
+
+  it('displays an error message if the login failed', async () => {
+    mockStore.commit('setLoginError', 'Login failed')
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('Login failed')
+  })
 })
