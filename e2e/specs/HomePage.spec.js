@@ -123,10 +123,7 @@ test.beforeAll(async ({}, workerParams) => {
   }
   // todo: temporary hardcoded url
   apiClient.defaults.baseURL = 'http://localhost:8000/'
-  apiClient.defaults.headers['X-CSRFToken'] = await csrf.getCsrfToken()
-
-  await apiClient.post('api/create_test_data/', testData)
-
+  const csrfToken = await csrf.getCsrfToken()
   const authResponse = await auth.loginUser({
     username: workerParams.project.use.testUser,
     password: process.env.TEST_USER_PASSWORD
@@ -134,6 +131,11 @@ test.beforeAll(async ({}, workerParams) => {
   const jwtToken = authResponse.data.access
   const refreshToken = authResponse.data.refresh
   projectTokens[workerParams.project.name] = { jwtToken, refreshToken }
+
+  apiClient.defaults.headers['X-CSRFToken'] = csrfToken
+  apiClient.defaults.headers['Authorization'] = `Bearer ${jwtToken}`
+
+  await apiClient.post('api/create_test_data/', testData)
 })
 
 test.beforeEach(async ({ page }, workerParams) => {
