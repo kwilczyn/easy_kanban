@@ -70,6 +70,7 @@ export default {
   gap: 1rem;
   padding: 1rem;
   background-color: var(--color-background-nav);
+  min-height: 35rem;
 }
 
 #selectionContainer {

@@ -1,6 +1,6 @@
 <template>
-  <h2>Register a new user</h2>
   <form id="register-user-form" @submit.prevent="submitForm">
+    <h2>Register a new user</h2>
     <base-form-row
       label="Username"
       :fieldValidator="usernameInvalid"
@@ -128,6 +128,10 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+  text-align: center;
+}
+
 #register-user-form {
   display: flex;
   flex-direction: column;
