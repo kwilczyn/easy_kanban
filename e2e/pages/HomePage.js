@@ -6,6 +6,7 @@ import TaskMenu from './modals/TaskMenu.js'
 export default class HomePage {
   constructor(page) {
     this.page = page
+    this.navigationBar = page.locator('nav')
     this.boardSelect = page.getByLabel('Select a board')
     this.addListButton = page.getByRole('button', { name: '+' }).last()
     this.addListModal = new AddListModal(page)

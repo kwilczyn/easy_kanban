@@ -114,5 +114,6 @@ export default defineConfig({
     command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
     port: 5173,
     reuseExistingServer: !process.env.CI
-  }
+  },
+  globalTeardown: './e2e/utils/globalTeardown.js'
 })
