@@ -38,6 +38,14 @@ export const mutations = {
     state.loginError = false
   },
 
+  setRegisterError(state, payload) {
+    state.registerError = payload
+  },
+
+  resetRegisterError(state) {
+    state.registerError = false
+  },
+
   setCsrftoken(state, payload) {
     state.csrfToken = payload.csrfToken
   },
@@ -168,12 +176,28 @@ export const actions = {
     }
     try {
       context.commit('setWaitingForRegistration', true)
+      context.commit('setRegisterError', false)
       await authApi.registerUser(payload)
       context.commit('setRegistrationSuccessful', true)
       context.commit('setWaitingForRegistration', false)
     } catch (error) {
       context.commit('setWaitingForRegistration', false)
-      console.error('Error registering user', error)
+      if (error.response && error.response.status === 400) {
+        context.commit('setCommunicationError', null)
+        context.commit(
+          'setRegisterError',
+          Object.entries(error.response.data)
+            .map(([key, value]) => {
+              if (Array.isArray(value)) {
+                value = value.join(', ')
+              }
+              return `${key}: ${value}`
+            })
+            .join('\n')
+        )
+      } else {
+        console.error('Error registering user', error)
+      }
     }
   },
 
@@ -426,6 +450,7 @@ const store = createStore({
       refreshToken: null,
       registrationSuccessful: null,
       loginError: false,
+      registerError: false,
       boards: [],
       activeBoard: {},
       loadingBoard: false,

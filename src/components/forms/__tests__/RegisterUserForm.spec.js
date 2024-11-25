@@ -132,4 +132,10 @@ describe('RegisterUserForm', () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.find('button[type="submit"]').classes()).not.toContain('loading')
   })
+
+  it('displays an error message if registration fails', async () => {
+    mockStore.state.registerError = 'Registration failed'
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('Registration failed')
+  })
 })

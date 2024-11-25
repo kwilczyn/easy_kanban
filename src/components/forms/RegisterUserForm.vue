@@ -29,6 +29,7 @@
       name="confirmPassword"
       v-model.lazy.trim="password_confirm"
     />
+    <p class="error_text" v-if="registerError">{{ registerError }}</p>
     <base-button customType="add" type="submit" :class="{ loading: waitingForRegistration }"
       >Register</base-button
     >
@@ -52,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['waitingForRegistration'])
+    ...mapState(['waitingForRegistration', 'registerError'])
   },
   methods: {
     ...mapActions(['registerUser']),

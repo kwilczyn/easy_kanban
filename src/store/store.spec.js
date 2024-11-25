@@ -241,6 +241,18 @@ describe('mutations', () => {
     setWaitingForLogin(state, true)
     expect(state.waitingForLogin).toBe(true)
   })
+
+  it('setLoginError', () => {
+    const { setLoginError } = mutations
+    setLoginError(state, 'Unauthorized')
+    expect(state.loginError).toBe('Unauthorized')
+  })
+
+  it('setRegisterError', () => {
+    const { setRegisterError } = mutations
+    setRegisterError(state, 'Registration failed')
+    expect(state.registerError).toBe('Registration failed')
+  })
 })
 
 describe('getters', () => {
@@ -363,6 +375,20 @@ describe('actions', () => {
 
     expect(context.commit).not.toHaveBeenCalledWith('setRegistrationSuccessful', true)
     expect(context.commit).toHaveBeenCalledWith('setWaitingForRegistration', false)
+  })
+
+  it('registerUser sets registerError when registration fails with response code 400', async () => {
+    const payload = {
+      username: 'testuser',
+      password: 'password123',
+      password_confirm: 'password123',
+      email: 'test@test.pl'
+    }
+    const error = new Error('Registration failed')
+    error.response = { status: 400, data: { detail: 'Bad request' } }
+    authApi.registerUser.mockRejectedValueOnce(error)
+    await actions.registerUser(context, payload)
+    expect(context.commit).toHaveBeenCalledWith('setRegisterError', 'detail: Bad request')
   })
 
   it('loginUser throws error when any required field is missing', async () => {
