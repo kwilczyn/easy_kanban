@@ -1,6 +1,9 @@
 <template>
   <div class="content">
-    <h1>Welcome to Easy Kanban App!</h1>
+    <h1>
+      Welcome to Easy Kanban App!
+      <img src="@/assets/logo.webp" class="logo-icon" />
+    </h1>
     <p>
       Easy Kanban is a simple Kanban board application that allows you to manage your tasks in a
       visual way.
@@ -64,6 +67,15 @@ export default {
 
 <style scoped>
 .content {
+  text-align: center;
+  h1 {
+    vertical-align: center;
+  }
+
+  .logo-icon {
+    position: static;
+  }
+
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -19,7 +19,7 @@ test.beforeEach(async ({ page }, workerParams) => {
 test('log in a valid user', async ({}, workerParams) => {
   await loginPage.logIn(workerParams.project.use.testUser, process.env.TEST_USER_PASSWORD)
   await expect(homePage.page).not.toHaveURL(/auth/)
-  expect(homePage.navigationBar).toContainText('Select a board')
+  expect(homePage.navigationBar).toContainText('Board')
 })
 
 test('log in a user with invalid credentials', async () => {
@@ -41,7 +41,7 @@ test('register a new user and log in', async ({}, workerParams) => {
   await expect(loginPage.registerSuccesfulInfo).toContainText('Registration successful!')
   await loginPage.logIn(username, process.env.TEST_USER_PASSWORD)
   await expect(homePage.page).not.toHaveURL(/auth/)
-  await expect(homePage.navigationBar).toContainText('Select a board')
+  await expect(homePage.navigationBar).toContainText('Board')
 })
 
 function getRandomUsername() {
