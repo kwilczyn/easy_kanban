@@ -3,7 +3,7 @@ export default class HomePage {
     this.page = page
 
     this.logInSwitchButton = page.locator('#log-in-selection-button')
-    this.signInSwtichButton = page.locator('#sign-in-selection-button')
+    this.signInSwtichButton = page.locator('#sign-up-selection-button')
 
     this.logInUserForm = page.locator('#login-user-form')
     this.usernameInput = page.getByLabel('Username')

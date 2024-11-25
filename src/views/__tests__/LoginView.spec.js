@@ -45,19 +45,19 @@ describe('LoginView', () => {
     expect(wrapper.findComponent(RegisterUserForm).exists()).toBe(false)
   })
 
-  it('switches back to "sign-in" mode when Sign In button is clicked', async () => {
+  it('switches back to "sign-up" mode when Sign In button is clicked', async () => {
     // First switch to "log-in" mode
     await wrapper.find('#log-in-selection-button').trigger('click')
     // Then switch back to "sign-in" mode
-    await wrapper.find('#sign-in-selection-button').trigger('click')
-    expect(wrapper.vm.mode).toBe('sign-in')
+    await wrapper.find('#sign-up-selection-button').trigger('click')
+    expect(wrapper.vm.mode).toBe('sign-up')
     expect(wrapper.findComponent(RegisterUserForm).exists()).toBe(true)
   })
 
   it('displays registration success message when registrationSuccessful is true', async () => {
     mockStore.state.registrationSuccessful = true
     await wrapper.vm.$nextTick()
-    await wrapper.find('#sign-in-selection-button').trigger('click')
+    await wrapper.find('#sign-up-selection-button').trigger('click')
     expect(wrapper.find('#registration-successful-info').text()).toContain(
       'Registration successful! Please log in.'
     )
@@ -81,8 +81,8 @@ describe('LoginView', () => {
     // Default mode is "log-in"
     expect(wrapper.find('#log-in-selection-button').classes()).toContain('selected')
     // Switch to "log-in" mode
-    await wrapper.find('#sign-in-selection-button').trigger('click')
-    expect(wrapper.find('#sign-in-selection-button').classes()).toContain('selected')
+    await wrapper.find('#sign-up-selection-button').trigger('click')
+    expect(wrapper.find('#sign-up-selection-button').classes()).toContain('selected')
     expect(wrapper.find('#log-in-selection-button').classes()).not.toContain('selected')
   })
 })
