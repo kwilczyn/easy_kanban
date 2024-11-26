@@ -66,9 +66,13 @@ export default {
       event.stopPropagation()
     },
     getShortDescription() {
-      return this.task.description.length > 100
-        ? this.task.description.slice(0, 100) + '...'
-        : this.task.description
+      if (this.task.description) {
+        return this.task.description.length > 100
+          ? this.task.description.slice(0, 100) + '...'
+          : this.task.description
+      } else {
+        return ''
+      }
     }
   }
 }

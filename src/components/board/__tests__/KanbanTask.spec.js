@@ -48,6 +48,11 @@ describe('KanbanTask', () => {
     await wrapper.vm.$nextTick()
     expect(wrapper.text()).toContain('a'.repeat(100) + '...')
   })
+  it('renders task property if description is empty', async () => {
+    wrapper.setProps({ task: { id: 1, title: 'Task 1', description: '' } })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('Task 1')
+  })
   it('renders dropdown properly', async () => {
     await wrapper.findComponent(BaseButton).trigger('click')
     expect(wrapper.findComponent(BaseDropdown).exists()).toBe(true)
