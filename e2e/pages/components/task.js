@@ -5,6 +5,6 @@ export default function taskByTitle(list, title) {
   } else {
     task = list.locator('li:has([draggable])')
   }
-  task.burgerMenuButton = task.getByRole('button', { name: '...' })
+  task.burgerMenuButton = task.getByRole('button', { name: '≡' })
   return task
 }

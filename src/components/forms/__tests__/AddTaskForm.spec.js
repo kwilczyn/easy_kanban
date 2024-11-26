@@ -61,9 +61,9 @@ describe('AddTaskForm', () => {
 
   it('displays an error message if the task description is too long', async () => {
     await wrapper.find('input[name="title"]').setValue('My Task')
-    await wrapper.find('textarea[name="description"]').setValue('a'.repeat(101))
+    await wrapper.find('textarea[name="description"]').setValue('a'.repeat(501))
     await wrapper.find('form').trigger('submit.prevent')
-    expect(wrapper.text()).toContain('Description must be at most 100 characters')
+    expect(wrapper.text()).toContain('Description must be at most 500 characters')
   })
 
   it("doesn't submit a task if the form is invalid", async () => {

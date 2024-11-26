@@ -19,7 +19,7 @@
         </select>
       </base-dropdown>
     </header>
-    <div class="task-description">{{ task.description }}</div>
+    <div class="task-description">{{ getShortDescription() }}</div>
   </div>
 </template>
 
@@ -64,6 +64,11 @@ export default {
       const taskId = Number(event.dataTransfer.getData('taskId'))
       this.moveTaskAbove({ listId: listId, taskId: taskId, targetTaskId: this.task.id })
       event.stopPropagation()
+    },
+    getShortDescription() {
+      return this.task.description.length > 100
+        ? this.task.description.slice(0, 100) + '...'
+        : this.task.description
     }
   }
 }
@@ -83,6 +88,19 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.kanban-task__header [customType='burger'] {
+  padding-right: 0;
+}
+
+.task-description {
+  overflow-wrap: break-word;
+}
+
+.kanban-task__header h3 {
+  overflow: hidden; /* ukrywa tekst wykraczający poza obszar */
+  text-overflow: ellipsis; /* dodaje ... na końcu */
 }
 
 nav label,

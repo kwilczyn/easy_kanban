@@ -1,6 +1,6 @@
 <template>
   <button :class="[$attrs.customType]">
-    <slot>...</slot>
+    <slot>&#8801;</slot>
   </button>
 </template>
 
