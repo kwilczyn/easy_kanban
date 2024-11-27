@@ -24,8 +24,10 @@ Implemented features:
 - fallback UI for components when waiting for required data
 - dedicated API client as a separate module
 - handling communication errors
+- Registration and authentication of users
 - unit tests (Vitest)
 - E2E Tests (Playwright)
+
 
 ## Recommended IDE Setup
 
