@@ -1,5 +1,11 @@
 <template>
-  <div class="kanban-task" @drop="onDrop" @dragover.prevent @dragenter.prevent>
+  <div
+    class="kanban-task"
+    @drop="onDrop"
+    @dragover.prevent
+    @dragenter.prevent
+    :class="{ loading: !task.id }"
+  >
     <header class="kanban-task__header">
       <h3>{{ task.title }}</h3>
       <base-button customType="burger" @click.stop="toggleDropdown"></base-button>
@@ -13,7 +19,7 @@
         </select>
       </base-dropdown>
     </header>
-    <div class="task-description">{{ task.description }}</div>
+    <div class="task-description">{{ getShortDescription() }}</div>
   </div>
 </template>
 
@@ -54,9 +60,19 @@ export default {
       this.$emit('moveTask', { to: event.target.value, taskId: this.task.id })
     },
     onDrop(event) {
-      const taskId = event.dataTransfer.getData('taskId')
-      this.moveTaskAbove({ taskId: taskId, targetTaskId: this.task.id })
+      const listId = Number(event.dataTransfer.getData('from'))
+      const taskId = Number(event.dataTransfer.getData('taskId'))
+      this.moveTaskAbove({ listId: listId, taskId: taskId, targetTaskId: this.task.id })
       event.stopPropagation()
+    },
+    getShortDescription() {
+      if (this.task.description) {
+        return this.task.description.length > 100
+          ? this.task.description.slice(0, 100) + '...'
+          : this.task.description
+      } else {
+        return ''
+      }
     }
   }
 }
@@ -76,6 +92,19 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.kanban-task__header [customType='burger'] {
+  padding-right: 0;
+}
+
+.task-description {
+  overflow-wrap: break-word;
+}
+
+.kanban-task__header h3 {
+  overflow: hidden; /* ukrywa tekst wykraczający poza obszar */
+  text-overflow: ellipsis; /* dodaje ... na końcu */
 }
 
 nav label,

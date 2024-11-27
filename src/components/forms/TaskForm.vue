@@ -80,8 +80,8 @@ export default {
       return false
     },
     validateDescription() {
-      if (this.description && this.description.length > 100) {
-        this.descriptionInvalid = 'Description must be at most 100 characters'
+      if (this.description && this.description.length > 500) {
+        this.descriptionInvalid = 'Description must be at most 500 characters'
       } else {
         this.descriptionInvalid = ''
         return true

@@ -11,15 +11,16 @@ import TaskForm from '@/components/forms/TaskForm.vue'
 import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
 
 import { createStore } from 'vuex'
+import { getters } from '@/store/store'
+import { mutations } from '@/store/store'
 
 const mockStore = createStore({
-  getters: {
-    getListTitles: () => ['To Do', 'In Progress', 'Done']
-  },
+  getters: getters,
   actions: {
     moveTaskAbove: vi.fn(),
     moveTask: vi.fn()
-  }
+  },
+  mutations: mutations
 })
 
 describe('KanbanBoard', () => {
@@ -32,6 +33,7 @@ describe('KanbanBoard', () => {
 
   beforeEach(() => {
     data = {}
+    mockStore.commit('setLoadingBoard', false)
     wrapper = mount(KanbanBoard, {
       global: {
         components: { KanbanList, BaseButton, BaseDropdown, BaseModal, TaskForm },
@@ -43,6 +45,7 @@ describe('KanbanBoard', () => {
       props: {
         lists: [
           {
+            id: 1,
             title: 'To Do',
             tasks: [
               {
@@ -58,6 +61,7 @@ describe('KanbanBoard', () => {
             ]
           },
           {
+            id: 2,
             title: 'In Progress',
             tasks: [
               {
@@ -68,6 +72,7 @@ describe('KanbanBoard', () => {
             ]
           },
           {
+            id: 3,
             title: 'Done',
             tasks: [
               {
@@ -86,6 +91,7 @@ describe('KanbanBoard', () => {
     await wrapper.find('.kanban-task[id="1"]').trigger('dragstart', { dataTransfer })
     await wrapper.find('.kanban-task[id="3"]').trigger('drop', { dataTransfer })
     expect(mockStore.dispatch).toHaveBeenCalledWith('moveTaskAbove', {
+      listId: 1,
       taskId: 1,
       targetTaskId: 3
     })
@@ -96,9 +102,31 @@ describe('KanbanBoard', () => {
     await wrapper.find('.kanban-task[id="1"]').trigger('dragstart', { dataTransfer })
     await wrapper.find('.kanban-list:nth-of-type(3)').trigger('drop', { dataTransfer })
     expect(mockStore.dispatch).toHaveBeenCalledWith('moveTask', {
-      from: 'To Do',
-      to: 'Done',
+      from: 1,
+      to: 3,
       taskId: 1
     })
+  })
+
+  it('adds loading class to the board when the data are not ready', async () => {
+    mockStore.commit('setLoadingBoard', true)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.classes()).toContain('loading')
+  })
+
+  it('adds loading class to the board when the initial list is empty', async () => {
+    wrapper = mount(KanbanBoard, {
+      global: {
+        components: { KanbanList, BaseButton, BaseDropdown, BaseModal, TaskForm },
+        plugins: [mockStore],
+        directives: {
+          'click-outside': ClickOutsideDirective
+        }
+      },
+      props: {
+        lists: null
+      }
+    })
+    expect(wrapper.classes()).toContain('loading')
   })
 })

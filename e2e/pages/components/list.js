@@ -1,8 +1,14 @@
 import taskByTitle from './task.js'
 
 export default function listByTitle(page, title) {
+  let titleRegex = null
+  if (title) {
+    titleRegex = new RegExp(`^${title}$`, 'i')
+  } else {
+    titleRegex = new RegExp(`^.*$`, 'i')
+  }
   const list = page.locator('section', {
-    has: page.getByRole('heading', { name: title })
+    has: page.getByRole('heading', { name: titleRegex })
   })
   list.taskByTitle = (taskTitle) => {
     return taskByTitle(list, taskTitle)

@@ -3,32 +3,31 @@
 This project is a simple web application written in **Vue.js (3)** for creating your own digital Kanban Boards.  
 A Kanban board is a visual project management tool that helps teams organize and track their work. It typically consists of columns representing different stages of a workflow, with tasks or work items represented as cards that move across these columns as they progress.  
 
-The backend part will be located in a separate repository.  
+The repository for the backend part (Django Rest Framework) of this project can be found here:  https://github.com/kwilczyn/easy_kanban_backend
 
-Example animation of task flow: 
-<p align="middle">
-<img src="https://github.com/user-attachments/assets/5bebce08-d22f-4b56-95fb-30454ccca075" alt="Task Flow"/>  
-</p>
+Example user flow:  
 
-Look at the mobile app layout:  
+![task_flow](https://github.com/user-attachments/assets/d1d95030-39d6-4b0e-995e-9e701d2892be)
+
+The mobile version of the layout:  
 <p align="middle">
-<img src="https://github.com/user-attachments/assets/31c3b90b-d9eb-4b67-a41c-017848e6a6c7" alt="Mobile view"/>  
+<img src="https://github.com/user-attachments/assets/a9ddae2f-ef46-42ce-a720-8609c39bd449" alt="Mobile view"/>  
 </p>
 
 Implemented features:
-
-- the first design look for the desktop and mobile devices
-- the animations for the basic actions like deleting lists from the board
-- dark mode
-- basic CRUD operations including data valiadtion
+- design look for the desktop and mobile devices
+- dark mode theme
+- animations for the basic actions like deleting lists from the board
+- basic CRUD operations on tasks and lists
 - drag & drop operations for tasks
 - changing the order of the lists on the board
+- fallback UI for components when waiting for required data
+- dedicated API client as a separate module
+- handling communication errors
+- Registration and authentication of users
 - unit tests (Vitest)
 - E2E Tests (Playwright)
 
-In progress:  
-- Integration with backend (branch: BackendIntegration)
-- User authentication
 
 ## Recommended IDE Setup
 
@@ -43,6 +42,25 @@ See [Vite Configuration Reference](https://vitejs.dev/config/).
 ```sh
 npm install
 ```
+
+### Preparation of a dev instance of a backend
+
+```sh
+git clone https://github.com/kwilczyn/easy_kanban_backend.git
+python3 -m venv venv
+```
+Activate the new created virtual environent using steps suited to your operating system  
+
+For MacOs/Linux:
+```sh
+source ./venv/bin/activate
+```
+Install requirements and run dev server:
+```sh
+python -m pip install -r requirements.txt  
+python ./easy_kanban_backend/manage.py runserver  
+```
+The dev server should be started on localhost:8000
 
 ### Compile and Hot-Reload for Development
 

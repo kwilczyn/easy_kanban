@@ -77,7 +77,7 @@ textarea {
   border: 1px solid var(--vt-c-black);
   color: inherit;
   font: inherit;
-  height: 10rem;
+  height: 15rem;
   width: 12rem;
 }
 </style>

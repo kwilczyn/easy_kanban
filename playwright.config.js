@@ -50,18 +50,24 @@ export default defineConfig({
     {
       name: 'chromium',
       use: {
+        testUser: 'test',
+        testUserId: 2,
         ...devices['Desktop Chrome']
       }
     },
     {
       name: 'firefox',
       use: {
+        testUser: 'test2',
+        testUserId: 3,
         ...devices['Desktop Firefox']
       }
     },
     {
       name: 'webkit',
       use: {
+        testUser: 'test3',
+        testUserId: 4,
         ...devices['Desktop Safari']
       }
     }
@@ -108,5 +114,6 @@ export default defineConfig({
     command: process.env.CI ? 'vite preview --port 5173' : 'vite dev',
     port: 5173,
     reuseExistingServer: !process.env.CI
-  }
+  },
+  globalTeardown: './e2e/utils/globalTeardown.js'
 })

@@ -1,6 +1,6 @@
 <template>
   <button :class="[$attrs.customType]">
-    <slot>...</slot>
+    <slot>&#8801;</slot>
   </button>
 </template>
 
@@ -59,7 +59,7 @@ button:focus {
 .navigation {
   background-color: var(--color-nav-buttons);
   border: 1px solid var(--color-text);
-  min-width: 5.2rem;
+  min-width: 4.5rem;
   font-size: inherit;
 }
 
@@ -70,5 +70,10 @@ button:focus {
   color: var(--color-text);
   font-weight: bold;
   font-family: Helvetica, sans-serif;
+}
+
+.selected {
+  font-weight: bold;
+  border-width: 3px;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div id="board">
+  <div id="board" :class="{ loading: loading }">
     <transition-group
       mode="out-in"
       name="user-list"
@@ -10,6 +10,7 @@
     >
       <kanban-list
         v-for="(list, index) in lists"
+        :id="list.id"
         :key="list.title"
         :title="list.title"
         :tasks="list.tasks"
@@ -18,7 +19,7 @@
         :last="index === lists.length - 1"
       />
     </transition-group>
-    <div id="add-list-button-container">
+    <div id="add-list-button-container" v-if="getActiveBoard">
       <base-button customType="add" class="oval" @click="openAddListModal">+</base-button>
       <base-modal v-if="isAddListModalOpen" open @closeModal="isAddListModalOpen = false">
         <template #modalTitle>Add List</template>
@@ -31,7 +32,7 @@
 <script>
 import KanbanList from '@/components/board/KanbanList.vue'
 import AddListForm from '@/components/forms/AddListForm.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -49,6 +50,12 @@ export default {
     return {
       animationSpeed: 500,
       isAddListModalOpen: false
+    }
+  },
+  computed: {
+    ...mapGetters(['getActiveBoard']),
+    loading() {
+      return !this.lists || this.$store.state.loadingBoard
     }
   },
   methods: {

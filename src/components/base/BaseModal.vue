@@ -28,6 +28,13 @@ export default {
 </script>
 
 <style scoped>
+h2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
 #modal {
   position: fixed;
   left: 50%;

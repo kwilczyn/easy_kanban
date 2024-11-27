@@ -1,5 +1,11 @@
 <template>
-  <section class="kanban-list" @drop="onDrop" @dragover.prevent @dragenter.prevent>
+  <section
+    class="kanban-list"
+    @drop="onDrop"
+    @dragover.prevent
+    @dragenter.prevent
+    :class="{ loading: !id }"
+  >
     <header>
       <h2>{{ title }}</h2>
       <base-button customType="delete" @click="removeList">X</base-button>
@@ -31,14 +37,14 @@
             v-if="!first"
             customType="nav-arrow"
             aria-roledescription="Move list backward"
-            @click="moveListBackward({ listTitle: title })"
+            @click="moveListBackward({ listTitle: title, id: id })"
             >&#11013;&#xFE0E;</base-button
           >
           <base-button
             v-if="!last"
             customType="nav-arrow"
             aria-roledescription="Move list forward"
-            @click="moveListForward({ listTitle: title })"
+            @click="moveListForward({ listTitle: title, id: id })"
             >&#x2B95;&#xFE0E;</base-button
           >
         </div>
@@ -57,6 +63,10 @@ export default {
   emits: ['removeList'],
   name: 'KanbanList',
   props: {
+    id: {
+      type: Number,
+      required: true
+    },
     title: {
       type: String,
       required: true
@@ -81,7 +91,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getTaskTitles']),
+    ...mapGetters(['getTaskTitles', 'getListByTitle']),
     isEditMode() {
       return this.editedTask.id ? true : false
     }
@@ -96,19 +106,19 @@ export default {
       'moveListForward'
     ]),
     onRemoveTask(task) {
-      this.removeTask({ listTitle: this.title, ...task })
+      this.removeTask({ listId: this.id, listTitle: this.title, ...task })
     },
-    removeList() {
-      this.$emit('removeList', { title: this.title })
+    async removeList() {
+      this.$emit('removeList', { id: this.id, title: this.title })
     },
     openAddTaskModal() {
       this.isAddTaskModalVisible = true
     },
     onSubmitAddTaskForm(payload) {
       if (this.isEditMode) {
-        this.updateTask({ listTitle: this.title, ...payload })
+        this.updateTask({ listId: this.id, listTitle: this.title, ...payload })
       } else {
-        this.addTask({ listTitle: this.title, ...payload })
+        this.addTask({ listId: this.id, listTitle: this.title, ...payload })
       }
       this.closeTaskModal()
     },
@@ -122,20 +132,21 @@ export default {
     },
     onMoveTask({ to, taskId }) {
       if (to !== this.title) {
-        this.moveTask({ from: this.title, to, taskId })
+        const destinationId = this.getListByTitle(to).id
+        this.moveTask({ from: this.id, to: destinationId, taskId })
       }
     },
     onDrop(event) {
       const taskId = event.dataTransfer.getData('taskId')
       const from = event.dataTransfer.getData('from')
-      this.moveTask({ from: from, to: this.title, taskId: Number(taskId) })
+      this.moveTask({ from: Number(from), to: Number(this.id), taskId: Number(taskId) })
       event.stopPropagation()
     },
     startDrag(event) {
       event.dataTransfer.dropEffect = 'move'
       event.dataTransfer.effectAllowed = 'move'
       event.dataTransfer.setData('taskId', Number(event.target.id))
-      event.dataTransfer.setData('from', this.title)
+      event.dataTransfer.setData('from', Number(this.id))
     }
   }
 }

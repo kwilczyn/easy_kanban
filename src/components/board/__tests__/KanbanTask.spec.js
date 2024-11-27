@@ -6,6 +6,7 @@ import BaseButton from '@/components/base/BaseButton.vue'
 import BaseDropdown from '@/components/base/BaseDropdown.vue'
 import { createStore } from 'vuex'
 import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
+import { nextTick } from 'vue'
 
 const mockStore = createStore({
   getters: {
@@ -40,6 +41,17 @@ describe('KanbanTask', () => {
   })
   it('renders description properly', () => {
     expect(wrapper.text()).toContain('This is a task description.')
+  })
+  it('shows only 100 characters of longer descriptions', async () => {
+    const longDescription = 'a'.repeat(101)
+    wrapper.setProps({ task: { id: 1, title: 'Task 1', description: longDescription } })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('a'.repeat(100) + '...')
+  })
+  it('renders task property if description is empty', async () => {
+    wrapper.setProps({ task: { id: 1, title: 'Task 1', description: '' } })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.text()).toContain('Task 1')
   })
   it('renders dropdown properly', async () => {
     await wrapper.findComponent(BaseButton).trigger('click')
