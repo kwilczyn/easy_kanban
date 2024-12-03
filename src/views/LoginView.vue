@@ -37,8 +37,12 @@
 
 <script>
 import { mapState } from 'vuex'
-import RegisterUserForm from '@/components/forms/RegisterUserForm.vue'
+import { defineAsyncComponent } from 'vue'
 import LoginForm from '@/components/forms/LoginForm.vue'
+
+const RegisterUserForm = defineAsyncComponent(
+  () => import('@/components/forms/RegisterUserForm.vue')
+)
 
 export default {
   name: 'LoginView',
