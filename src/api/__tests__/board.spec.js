@@ -31,7 +31,7 @@ describe('board', () => {
       const boardId = '456'
       board.fetchBoard({ boardId })
       expect(validateParams).toHaveBeenCalledWith({ boardId })
-      expect(apiClient.get).toHaveBeenCalledWith(`api/board/${boardId}`)
+      expect(apiClient.get).toHaveBeenCalledWith(`api/board/${boardId}/`)
     })
   })
 
@@ -40,7 +40,7 @@ describe('board', () => {
       const boardData = { name: 'New Board' }
       board.createBoard({ boardData })
       expect(validateParams).toHaveBeenCalledWith({ boardData })
-      expect(apiClient.post).toHaveBeenCalledWith('api/board', boardData)
+      expect(apiClient.post).toHaveBeenCalledWith('api/board/', boardData)
     })
   })
 
@@ -49,7 +49,7 @@ describe('board', () => {
       const boardId = '789'
       board.deleteBoard({ boardId })
       expect(validateParams).toHaveBeenCalledWith({ boardId })
-      expect(apiClient.delete).toHaveBeenCalledWith(`api/board/${boardId}`)
+      expect(apiClient.delete).toHaveBeenCalledWith(`api/board/${boardId}/`)
     })
   })
 })
