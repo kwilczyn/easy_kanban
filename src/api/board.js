@@ -10,14 +10,14 @@ export default {
 
   fetchBoard({ boardId }) {
     validateParams({ boardId })
-    return apiClient.get(`api/board/${boardId}`)
+    return apiClient.get(`api/board/${boardId}/`)
   },
   createBoard({ boardData }) {
     validateParams({ boardData })
-    return apiClient.post('api/board', boardData)
+    return apiClient.post('api/board/', boardData)
   },
   deleteBoard({ boardId }) {
     validateParams({ boardId })
-    return apiClient.delete(`api/board/${boardId}`)
+    return apiClient.delete(`api/board/${boardId}/`)
   }
 }
