@@ -2,6 +2,7 @@ import AddListModal from './modals/AddListModal.js'
 import AddTaskModal from './modals/AddTaskModal.js'
 import listByTitle from './components/list.js'
 import TaskMenu from './modals/TaskMenu.js'
+import ConfirmRemoveModal from './modals/ConfirmRemoveModal.js'
 
 export default class HomePage {
   constructor(page) {
@@ -10,6 +11,7 @@ export default class HomePage {
     this.boardSelect = page.getByLabel('Board')
     this.addListButton = page.getByRole('button', { name: '+' }).last()
     this.addListModal = new AddListModal(page)
+    this.confirmRemoveModal = new ConfirmRemoveModal(page)
     this.taskModal = new AddTaskModal(page)
     this.taskMenu = new TaskMenu(page)
     this.errorModal = page.getByRole('alert', { name: 'Error' })
@@ -31,6 +33,7 @@ export default class HomePage {
 
   async removeList(title) {
     await this.listByTitle(title).removeListButton.click()
+    await this.confirmRemoveModal.confirmButton.click()
   }
 
   async addTask(listTitle, taskTitle) {

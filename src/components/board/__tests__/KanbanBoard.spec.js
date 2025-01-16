@@ -9,6 +9,7 @@ import KanbanList from '@/components/board/KanbanList.vue'
 import BaseDropdown from '@/components/base/BaseDropdown.vue'
 import TaskForm from '@/components/forms/TaskForm.vue'
 import ClickOutsideDirective from '@/directives/ClickOutsideDirective.js'
+import RemoveListForm from '@/components/forms/RemoveListForm.vue'
 
 import { createStore } from 'vuex'
 import { getters } from '@/store/store'
@@ -36,10 +37,13 @@ describe('KanbanBoard', () => {
     mockStore.commit('setLoadingBoard', false)
     wrapper = mount(KanbanBoard, {
       global: {
-        components: { KanbanList, BaseButton, BaseDropdown, BaseModal, TaskForm },
+        components: { KanbanList, BaseButton, BaseDropdown, BaseModal, TaskForm, RemoveListForm },
         plugins: [mockStore],
         directives: {
           'click-outside': ClickOutsideDirective
+        },
+        stubs: {
+          teleport: true
         }
       },
       props: {
@@ -128,5 +132,30 @@ describe('KanbanBoard', () => {
       }
     })
     expect(wrapper.classes()).toContain('loading')
+  })
+
+  it('renders confirmation modal when the delete button from one of the lists is clicked', async () => {
+    await wrapper.find('.kanban-list:nth-of-type(1) .delete').trigger('click')
+    expect(wrapper.findComponent(BaseModal).exists()).toBe(true)
+    expect(wrapper.findComponent(BaseModal).text()).toContain('Removing List:')
+  })
+
+  it('activates removeList action from the store when the confirmRemoveList event is emmited', async () => {
+    vi.spyOn(mockStore, 'dispatch')
+    await wrapper
+      .findComponent(KanbanList)
+      .vm.$emit('removeList', { listId: 1, listTitle: 'To Do' })
+    await wrapper.findComponent(RemoveListForm).vm.$emit('confirmRemoveList')
+    expect(mockStore.dispatch).toHaveBeenCalledWith('removeList', { listId: 1, listTitle: 'To Do' })
+  })
+
+  it('does not activate removeList action from the store when the closeModal event is emmited', async () => {
+    vi.spyOn(mockStore, 'dispatch')
+    await wrapper
+      .findComponent(KanbanList)
+      .vm.$emit('removeList', { listId: 1, listTitle: 'To Do' })
+    await wrapper.findComponent(BaseModal).vm.$emit('closeModal')
+    expect(mockStore.dispatch).not.toHaveBeenCalled()
+    expect(wrapper.findComponent(BaseModal).exists()).toBe(false)
   })
 })

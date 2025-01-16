@@ -14,7 +14,7 @@
         :key="list.title"
         :title="list.title"
         :tasks="list.tasks"
-        @removeList="removeList"
+        @removeList="openRemoveListModal"
         :first="index === 0"
         :last="index === lists.length - 1"
       />
@@ -26,6 +26,10 @@
         <add-list-form @submitAddList="closeAddListModal" />
       </base-modal>
     </div>
+    <base-modal v-if="isRemoveListModalOpen" @closeModal="isRemoveListModalOpen = false">
+      <template #modalTitle>Removing List: "{{ listToRemove.title }}"</template>
+      <remove-list-form @confirmRemoveList="closeRemoveListModal"></remove-list-form>
+    </base-modal>
   </div>
 </template>
 
@@ -33,11 +37,15 @@
 import KanbanList from '@/components/board/KanbanList.vue'
 import AddListForm from '@/components/forms/AddListForm.vue'
 import { mapActions, mapGetters } from 'vuex'
+import BaseButton from '../base/BaseButton.vue'
+import RemoveListForm from '@/components/forms/RemoveListForm.vue'
 
 export default {
   components: {
     KanbanList,
-    AddListForm
+    AddListForm,
+    BaseButton,
+    RemoveListForm
   },
   name: 'KanbanBoard',
   props: {
@@ -49,7 +57,9 @@ export default {
   data() {
     return {
       animationSpeed: 500,
-      isAddListModalOpen: false
+      isAddListModalOpen: false,
+      isRemoveListModalOpen: false,
+      listToRemove: null
     }
   },
   computed: {
@@ -60,6 +70,15 @@ export default {
   },
   methods: {
     ...mapActions(['removeList', 'addList']),
+    openRemoveListModal(payload) {
+      this.isRemoveListModalOpen = true
+      this.listToRemove = payload
+    },
+    closeRemoveListModal(payload) {
+      this.removeList(this.listToRemove)
+      this.isRemoveListModalOpen = false
+      this.listToRemove = null
+    },
     openAddListModal() {
       this.isAddListModalOpen = true
     },
